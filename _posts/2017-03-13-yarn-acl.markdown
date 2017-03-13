@@ -7,9 +7,12 @@ tags: Yarn
 ---
 #### 权限相关配置参数
 * 管理员和普通用户如何区分
-由参数yarn.admin.acl指定
+  
+  由参数yarn.admin.acl指定
 * 服务级别的权限（eg：哪些用户可以向集群提交ResourceManager提交应用程序）
-通过配置hadoop-policy.xml实现
+  
+  通过配置hadoop-policy.xml实现
 * 队列级别的权限（eg：哪些用户可以向队列A提交作业）
-由对应的资源调度器内部配置（eg：Fair Scheduler或者Capacity Scheduler etc.）
+  
+  由对应的资源调度器内部配置（eg：Fair Scheduler或者Capacity Scheduler etc.）
 
