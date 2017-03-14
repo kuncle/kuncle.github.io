@@ -3,7 +3,7 @@ layout: post
 title:  "Yarn权限配置"
 date:   2017-03-13 21:25:00
 categories: Hadoop
-tags: Yarn
+tags: Hadoop
 ---
 #### 权限相关配置参数
 * 管理员和普通用户如何区分
