@@ -16,7 +16,7 @@ tags: Linux
 配置代理有多种方式，此处为修改环境变量.bash_profile
 在.bash_profile中加入：
 ``` shell
-export http_proxy=”http://proxy_addr:port”
+export http_proxy="http://proxy_addr:port"
 export https_proxy="http://proxy_addr:port"
 export ftp_proxy="http://proxy_addr:port"
 如果代理需要用户名和密码的话，这样设置：
