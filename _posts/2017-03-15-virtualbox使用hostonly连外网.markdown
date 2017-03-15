@@ -5,7 +5,7 @@ date:   2017-03-15 13:50:00
 categories: Linux
 tags: Linux
 ---
-######背景
+###### 背景
 > 公司机器都在内网中，访问外网需要配置代理。所以现在的问题是，virtualbox使用hostonly方式网络配置，并且需要配置代理访问外网。
 
 #### 配置hostonly
