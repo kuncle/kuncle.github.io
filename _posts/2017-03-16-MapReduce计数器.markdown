@@ -8,7 +8,7 @@ tags: Hadoop
 #### MapReduce计数器
 运行MapReduce的example包下的WordCount,计数器日志信息如下：
 
-###### File System Counters 文件系统计数器
+#### File System Counters 文件系统计数器
 * FILE: Number of bytes read=78 
 > job读取本地文件系统的文件字节数.假定我们当前map的输入数据都来自于HDFS,那么在map阶段,这个数据应该是0.但reduce在执行前,它的输入数据是经过shuffle的merge后存储在reduce端本地磁盘中,所以这个数据就是所有reduce的总输入字节数
 * FILE: Number of bytes written=237975 
@@ -24,7 +24,7 @@ tags: Hadoop
 * HDFS: Number of large read operations=0
 * HDFS: Number of write operations=2
 
-###### Job Counters 作业计数器
+#### Job Counters 作业计数器
 * Launched map tasks=1
 > job启动的map task个数 
 * Launched reduce tasks=1 
@@ -41,7 +41,7 @@ tags: Hadoop
 * Total vcore-milliseconds taken by all reduce tasks=89505
 * Total megabyte-milliseconds taken by all map tasks=41293824
 * Total megabyte-milliseconds taken by all reduce tasks=91653120
-###### Map-Reduce Framework MapReduce框架计数器
+#### Map-Reduce Framework MapReduce框架计数器
 * Map input records=6 
 > 所有map task从HDFS读取的文件总行数)
 * Map output records=11 
@@ -76,7 +76,7 @@ tags: Hadoop
 * Physical memory (bytes) snapshot=331804672
 * Virtual memory (bytes) snapshot=1755283456
 * Total committed heap usage (bytes)=168562688
-###### Shuffle Errors Shuffle错误计数器
+#### Shuffle Errors Shuffle错误计数器
 * BAD_ID=0 
 > 每个map都有一个ID,如attempt_201703016150_0254_m_000000_0,如果reduce的copy线程抓取过来的元数据中这个ID不是标准格式,那么此Counter增加
 * CONNECTION=0 
@@ -89,9 +89,9 @@ tags: Hadoop
 > 每个copy线程当然是有目的:为某个reduce抓取某些map的中间结果,如果当前抓取的map数据不是copy线程之前定义好的map,那么就表示把数据拉错了
 * WRONG_REDUCE=0 
 > 与上面描述一致,如果抓取的数据表示它不是为此reduce而准备的,那还是拉错数据了
-###### File Input Format Counters 文件输入格式计数器
+#### File Input Format Counters 文件输入格式计数器
 * Bytes Read=22 
 > Map task的所有输入数据(字节),等于各个map task的map方法传入的所有value值字节之和
-###### File Output Format Counters 文件输出格式计数器
+#### File Output Format Counters 文件输出格式计数器
 * Bytes Written=36 
 > Reduce task的所有输出数据(字节),等于各个reduce task的reduce方法传入的所有value值字节之和
