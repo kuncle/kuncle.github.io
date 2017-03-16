@@ -7,7 +7,7 @@ tags: Hadoop
 ---
 #### MapReduce计数器
 运行MapReduce的example包下的WordCount,计数器日志信息如下：
-``` shell
+``` java
 File System Counters 文件系统计数器
                 FILE: Number of bytes read=78 (job读取本地文件系统的文件字节数.假定我们当前map的输入数据都来自于HDFS,那么在map阶段,这个数据应该是0.但reduce在执行前,它的输入数据是经过shuffle的merge后存储在reduce端本地磁盘中,所以这个数据就是所有reduce的总输入字节数)
                 FILE: Number of bytes written=237975 (map的中间结果都会spill到本地磁盘中,在map执行完后,形成最终的spill文件.所以map端这里的数据就表示map task往本地磁盘中总共写了多少字节.与map端相对应的是,reduce端在shuffle时,会不断地拉取map端的中间结果,然后做merge并 不断spill到自己的本地磁盘中.最终形成一个单独文件,这个文件就是reduce的输入文件)
