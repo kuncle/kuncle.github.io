@@ -14,14 +14,13 @@ tags: Hadoop
 * 在跨节点拉取数据时，尽可能地减少对带宽的不必要消耗
 * 减少磁盘IO对task执行的影响
 
-###### 以WordCount为例,并假设它有8个map task和3个reduce task.
+###### 以WordCount为例,并假设它有8个map task和3个reduce task
 #### map端
 ![map_shuffle](/assets/img/map_shuffle.jpg)
     
     每个map task都有一个环形缓冲区.
 ![map_shuffle](/assets/img/buffer.jpg) 
-    
-    环形缓冲其实就是一个字节数组.存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据.
+环形缓冲其实就是一个字节数组.存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据.
 ``` java
  // MapTask.java
 private byte[] kvbuffer;  // main output buffer
@@ -42,9 +41,7 @@ kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用�
     
     当溢写线程启动后,需要对这80MB空间内的key做排序(Sort).排序是MapReduce模型默认的行为,这里的排序也是对序列化的字节做的排序. 
     
-    在这里我们可以想想,因为map task的输出是需要发送到不同的reduce端去,而内存缓冲区没有对将发送到相同reduce端的数据做合并,那么这种合并应该是体现是磁盘文件中的.从官方图上也可以看到写到磁盘中的溢写文件是对不同的reduce端的数值做过合并(每个Reducer会对应到一个Partition,并且每个Partition使用快速排序算法（QuickSort）对key排序,如果设置了Combiner,则在排序的结果上运行combine).所以溢写过程一个很重要的细节在于,如果有很多个key/value对需要发送到某个reduce端去,那么需要将这些key/value值拼接到一块,减少与partition相关的索引记录. 
-    
-    在针对每个reduce端而合并数据时,有些数据可能像这样:"aaa"/1,"aaa"/1.对于WordCount例子,就是简单地统计单词出现的次数,如果在同一个map task的结果中有很多个像"aaa"一样出现多次的key,我们就应该把它们的值合并到一块,这个过程叫reduce也叫combine.但MapReduce的术语中,reduce只指reduce端执行从多个map task取数据做计算的过程.除reduce外,非正式地合并数据只能算做combine了.其实大家知道的,MapReduce中将Combiner等同于Reducer. 
+    在这里我们可以想想,因为map task的输出是需要发送到不同的reduce端去,而内存缓冲区没有对将发送到相同reduce端的数据做合并,那么这种合并应该是体现是磁盘文件中的.从官方图上也可以看到写到磁盘中的溢写文件是对不同的reduce端的数值做过合并(每个Reducer会对应到一个Partition,并且每个Partition使用快速排序算法（QuickSort）对key排序,如果设置了Combiner,则在排序的结果上运行combine).所以溢写过程一个很重要的细节在于,如果有很多个key/value对需要发送到某个reduce端去,那么需要将这些key/value值拼接到一块,减少与partition相关的索引记录. 在针对每个reduce端而合并数据时,有些数据可能像这样:"aaa"/1,"aaa"/1.对于WordCount例子,就是简单地统计单词出现的次数,如果在同一个map task的结果中有很多个像"aaa"一样出现多次的key,我们就应该把它们的值合并到一块,这个过程叫reduce也叫combine.但MapReduce的术语中,reduce只指reduce端执行从多个map task取数据做计算的过程.除reduce外,非正式地合并数据只能算做combine了.其实大家知道的,MapReduce中将Combiner等同于Reducer.
     
     如果client设置过Combiner,那么现在就是使用Combiner的时候了.将有相同key的key/value对的value加起来,减少溢写到磁盘的数据量.Combiner会优化MapReduce的中间结果,所以它在整个模型中会多次使用.那哪些场景才能使用Combiner呢?从这里分析,Combiner的输出是Reducer的输入,Combiner绝不能改变最终的计算结果.所以从我的想法来看,Combiner只应该用于那种Reduce的输入key/value与输出key/value类型完全一致,且不影响最终结果的场景.比如累加,最大值等.Combiner的使用一定得慎重,如果用好,它对job执行效率有帮助,反之会影响reduce的最终结果. 
     
@@ -64,8 +61,7 @@ kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用�
 
 #### reduce端
 ![reduce_shuffle](/assets/img/reduce_shuffle.jpg)
-    
-    reduce task在执行之前的工作就是不断地拉取当前job里每个map task的最终结果,然后对从不同地方拉取过来的数据不断地做merge,也最终形成一个文件作为reduce task的输入文件.
+reduce task在执行之前的工作就是不断地拉取当前job里每个map task的最终结果,然后对从不同地方拉取过来的数据不断地做merge,也最终形成一个文件作为reduce task的输入文件.
 1. Copy过程,简单地拉取数据.Reduce进程启动一些数据copy线程(Fetcher),通过HTTP方式请求map task所在的TaskTracker获取map task的输出文件.因为map task早已结束,这些文件就归TaskTracker管理在本地磁盘中. 
 2. Merge阶段.这里的merge如map端的merge动作,只是数组中存放的是不同map端copy来的数值.Copy过来的数据会先放入内存缓冲区中,这里的缓冲区大小要比map端的更为灵活,它基于JVM的heap size设置,因为Shuffle阶段Reducer不运行,所以应该把绝大部分的内存都给Shuffle用.这里需要强调的是,merge有三种形式:1)内存到内存;2)内存到磁盘;3)磁盘到磁盘.默认情况下第一种形式不启用,让人比较困惑,是吧.当内存中的数据量到达一定阈值,就启动内存到磁盘的merge.与map 端类似,这也是溢写的过程,这个过程中如果你设置有Combiner,也是会启用的,然后在磁盘中生成了众多的溢写文件.第二种merge方式一直在运行,直到没有map端的数据时才结束,然后启动第三种磁盘到磁盘的merge方式生成最终的那个文件. 
 3. Reducer的输入文件.不断地merge后,最后会生成一个"最终文件".为什么加引号?因为这个文件可能存在于磁盘上,也可能存在于内存中.对我们来说,当然希望它存放于内存中,直接作为Reducer的输入,但默认情况下,这个文件是存放于磁盘中的.当Reducer的输入文件已定,整个Shuffle才最终结束.然后就是Reducer执行,把结果放到HDFS上. 
