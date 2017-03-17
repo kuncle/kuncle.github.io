@@ -28,11 +28,10 @@ kvbuffer = new byte[maxMemUsage - recordCapacity];
 ```  
 kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用一个分界点来标识.分界点不是永恒不变的,每次Spill之后都会更新一次.初始分界点为0,数据存储方向为向上增长,索引存储方向向下:
 ![buffer_index](/assets/img/buffer_index.jpg) 
-
 bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后变为4,写入一个int类型的value之后变成8.kvmeta的存放指针kvindex每次都是向下跳四个"格子".索引是对key-value在kvbuffer中的索引,是个四元组,占用四个Int长度,包括：value的起始位置,key的起始位置,partition值,value的长度.
 
-###### Shuffle整个流程分了四步. 
-1. 在map task执行时,它的输入数据来源于HDFS的block,当然在MapReduce概念中,map task只读取split.Split与block的对应关系可能是多对一,默认是一对一.在WordCount例子里,假设map的输入数据都是像“aaa”这样的字符串. 
+#### Shuffle整个流程分了四步
+1. 在map task执行时,它的输入数据来源于HDFS的block,当然在MapReduce概念中,map task只读取split.Split与block的对应关系可能是多对一,默认是一对一.在WordCount例子里,假设map的输入数据都是像"aaa"这样的字符串. 
 2. 在经过mapper的运行后,我们得知mapper的输出是这样一个key/value对:key是"aaa",value是数值1.因为当前map端只做加1的操作,在reduce task里才去合并结果集.前面我们知道这个job有3个reduce task,到底当前的“aaa”应该交由哪个reduce去做呢,是需要现在决定的. 
     
     MapReduce提供Partitioner接口,它的作用就是根据key或value及reduce的数量来决定当前的这对输出数据最终应该交由哪个reduce task处理.默认对key hash后再以reduce task数量取模.默认的取模方式只是为了平均reduce的处理能力,如果用户自己对Partitioner有需求,可以订制并设置到job上.在我们的例子中,"aaa"经过Partitioner后返回0,也就是这对值应当交由第一个reducer来处理.
@@ -45,7 +44,6 @@ bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后
     在这里我们可以想想,因为map task的输出是需要发送到不同的reduce端去,而内存缓冲区没有对将发送到相同reduce端的数据做合并,那么这种合并应该是体现是磁盘文件中的.从官方图上也可以看到写到磁盘中的溢写文件是对不同的reduce端的数值做过合并(每个Reducer会对应到一个Partition,并且每个Partition使用快速排序算法（QuickSort）对key排序,如果设置了Combiner,则在排序的结果上运行combine).所以溢写过程一个很重要的细节在于,如果有很多个key/value对需要发送到某个reduce端去,那么需要将这些key/value值拼接到一块,减少与partition相关的索引记录. 在针对每个reduce端而合并数据时,有些数据可能像这样:"aaa"/1,"aaa"/1.对于WordCount例子,就是简单地统计单词出现的次数,如果在同一个map task的结果中有很多个像"aaa"一样出现多次的key,我们就应该把它们的值合并到一块,这个过程叫reduce也叫combine.但MapReduce的术语中,reduce只指reduce端执行从多个map task取数据做计算的过程.除reduce外,非正式地合并数据只能算做combine了.其实大家知道的,MapReduce中将Combiner等同于Reducer.
     
     如果client设置过Combiner,那么现在就是使用Combiner的时候了.将有相同key的key/value对的value加起来,减少溢写到磁盘的数据量.Combiner会优化MapReduce的中间结果,所以它在整个模型中会多次使用.那哪些场景才能使用Combiner呢?从这里分析,Combiner的输出是Reducer的输入,Combiner绝不能改变最终的计算结果.所以从我的想法来看,Combiner只应该用于那种Reduce的输入key/value与输出key/value类型完全一致,且不影响最终结果的场景.比如累加,最大值等.Combiner的使用一定得慎重,如果用好,它对job执行效率有帮助,反之会影响reduce的最终结果. 
-    
 4. 每次溢写会在磁盘上生成一个溢写文件(数据被写入到mapreduce.cluster.local.dir配置的目录中的其中一个,使用round robin fashion的方式轮流.注意写入的是本地文件目录,而不是HDFS.Spill文件名像sipll0.out，spill1.out等),如果map的输出结果真的很大,有多次这样的溢写发生,磁盘上相应的就会有多个溢写文件存在.当map task真正完成时,内存缓冲区中的数据也全部溢写到磁盘中形成一个溢写文件(mapreduce.task.io.sort.factor属性配置每次最多合并多少个文件,默认为10,即一次最多合并10个spill文件.spill文件数量大于mapreduce.map.combiner.minspills配置的数,则在合并文件写入之前,会再次运行combiner.如果spill文件数量太少,运行combiner的收益可能小于调用的代价).
     
     合并过程的简单示意：
