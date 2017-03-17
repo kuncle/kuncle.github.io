@@ -49,7 +49,7 @@ bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后
     
     最终磁盘中会至少有一个这样的溢写文件存在(如果map的输出结果很少,当map执行完成时,只会产生一个溢写文件),因为最终的文件只有一个,所以需要将这些溢写文件归并到一起,这个过程就叫做Merge.Merge是怎样的?如前面的例子,“aaa”从某个map task读取过来时值是5，从另外一个map 读取时值是8,因为它们有相同的key,所以得merge成group.什么是group.对于“aaa”就是像这样的：{“aaa”, [5, 8, 2, …]},数组中的值就是从不同溢写文件中读取出来的.请注意,因为merge是将多个溢写文件合并到一个文件,所以可能也有相同的key存在,在这个过程中如果client设置过Combiner,也会使用Combiner来合并相同的key. 
     
-    每个mapper也有对应的一个索引环形Buffer,默认为1KB,可以通过mapreduce.task.index.cache.limit.bytes来配置,索引如果足够小则存在内存中,如果内存放不下,需要写入磁盘(索引文件超过21845.3时).Spill文件索引名称类似这样spill110.out.index,spill111.out.index.Spill文件的索引事实上是 org.apache.hadoop.mapred.SpillRecord的一个数组,每个Map任务（源码中的MapTask.java类）维护一个这样的列表.
+    每个mapper也有对应的一个索引环形Buffer,默认为1KB,可以通过mapreduce.task.index.cache.limit.bytes来配置,索引如果足够小则存在内存中,如果内存放不下,需要写入磁盘(索引文件超过21845.3时).Spill文件索引名称类似这样spill110.out.index,spill111.out.index.Spill文件的索引事实上是 org.apache.hadoop.mapred.SpillRecord的一个数组,每个Map任务（源码中的MapTask.java类）维护一个这样的列表.
     
     索引及spill文件如下图示意：
 ![spill](/assets/img/spill.jpg) 
