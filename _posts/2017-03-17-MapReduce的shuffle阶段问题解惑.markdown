@@ -5,7 +5,6 @@ date:   2017-03-17 13:40:00
 categories: Hadoop
 tags: Hadoop
 ---
-[TOC]
 #### Shuffle产生的意义是什么?
 Shuffle过程的期望可以有:
 完整地从map task端拉取数据到reduce 端.
