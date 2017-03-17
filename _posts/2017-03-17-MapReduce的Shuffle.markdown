@@ -22,11 +22,12 @@ tags: Hadoop
 ![map_shuffle](/assets/img/buffer.jpg) 
     
     环形缓冲其实就是一个字节数组.存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据.
- ``` java
+
  // MapTask.java
 private byte[] kvbuffer;  // main output buffer
 kvbuffer = new byte[maxMemUsage - recordCapacity];
- ```
+    
+    
 kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用一个分界点来标识.分界点不是永恒不变的,每次Spill之后都会更新一次.初始分界点为0,数据存储方向为向上增长,索引存储方向向下:
 ![buffer_index](/assets/img/buffer_index.jpg) 
     
