@@ -17,7 +17,8 @@ tags: Hadoop
 ###### 以WordCount为例,并假设它有8个map task和3个reduce task.
 #### map端
 ![map_shuffle](/assets/img/map_shuffle.jpg)
-整个流程分了四步.简单些可以这样说,每个map task都有一个内存缓冲区,存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据. 
+    
+    整个流程分了四步.简单些可以这样说,每个map task都有一个内存缓冲区,存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据. 
 1. 在map task执行时,它的输入数据来源于HDFS的block,当然在MapReduce概念中,map task只读取split.Split与block的对应关系可能是多对一,默认是一对一.在WordCount例子里,假设map的输入数据都是像“aaa”这样的字符串. 
 2. 在经过mapper的运行后,我们得知mapper的输出是这样一个key/value对:key是"aaa",value是数值1.因为当前map端只做加1的操作,在reduce task里才去合并结果集.前面我们知道这个job有3个reduce task,到底当前的“aaa”应该交由哪个reduce去做呢,是需要现在决定的. 
     
@@ -39,7 +40,8 @@ tags: Hadoop
 
 #### reduce端
 ![reduce_shuffle](/assets/img/reduce_shuffle.jpg)
-reduce task在执行之前的工作就是不断地拉取当前job里每个map task的最终结果,然后对从不同地方拉取过来的数据不断地做merge,也最终形成一个文件作为reduce task的输入文件.
+    
+    reduce task在执行之前的工作就是不断地拉取当前job里每个map task的最终结果,然后对从不同地方拉取过来的数据不断地做merge,也最终形成一个文件作为reduce task的输入文件.
 1. Copy过程,简单地拉取数据.Reduce进程启动一些数据copy线程(Fetcher),通过HTTP方式请求map task所在的TaskTracker获取map task的输出文件.因为map task早已结束,这些文件就归TaskTracker管理在本地磁盘中. 
 2. Merge阶段.这里的merge如map端的merge动作,只是数组中存放的是不同map端copy来的数值.Copy过来的数据会先放入内存缓冲区中,这里的缓冲区大小要比map端的更为灵活,它基于JVM的heap size设置,因为Shuffle阶段Reducer不运行,所以应该把绝大部分的内存都给Shuffle用.这里需要强调的是,merge有三种形式:1)内存到内存;2)内存到磁盘;3)磁盘到磁盘.默认情况下第一种形式不启用,让人比较困惑,是吧.当内存中的数据量到达一定阈值,就启动内存到磁盘的merge.与map 端类似,这也是溢写的过程,这个过程中如果你设置有Combiner,也是会启用的,然后在磁盘中生成了众多的溢写文件.第二种merge方式一直在运行,直到没有map端的数据时才结束,然后启动第三种磁盘到磁盘的merge方式生成最终的那个文件. 
 3. Reducer的输入文件.不断地merge后,最后会生成一个"最终文件".为什么加引号?因为这个文件可能存在于磁盘上,也可能存在于内存中.对我们来说,当然希望它存放于内存中,直接作为Reducer的输入,但默认情况下,这个文件是存放于磁盘中的.当Reducer的输入文件已定,整个Shuffle才最终结束.然后就是Reducer执行,把结果放到HDFS上. 
