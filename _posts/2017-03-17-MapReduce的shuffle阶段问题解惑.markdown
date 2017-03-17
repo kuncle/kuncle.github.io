@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "MapReduce的Shuffle"
+title:  "MapReduce的shuffle阶段问题解惑"
 date:   2017-03-17 13:40:00
 categories: Hadoop
 tags: Hadoop
@@ -44,3 +44,5 @@ HTTP协议
 
 #### reduce中merge过程有几种方式?
 merge有三种形式：1)内存到内存  2)内存到磁盘  3)磁盘到磁盘.
+
+
