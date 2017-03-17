@@ -28,8 +28,9 @@ kvbuffer = new byte[maxMemUsage - recordCapacity];
 ```  
 kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用一个分界点来标识.分界点不是永恒不变的,每次Spill之后都会更新一次.初始分界点为0,数据存储方向为向上增长,索引存储方向向下:
 ![buffer_index](/assets/img/buffer_index.jpg) 
-    
-    bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后变为4,写入一个int类型的value之后变成8.kvmeta的存放指针kvindex每次都是向下跳四个"格子".索引是对key-value在kvbuffer中的索引,是个四元组,占用四个Int长度,包括：value的起始位置,key的起始位置,partition值,value的长度.
+
+bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后变为4,写入一个int类型的value之后变成8.kvmeta的存放指针kvindex每次都是向下跳四个"格子".索引是对key-value在kvbuffer中的索引,是个四元组,占用四个Int长度,包括：value的起始位置,key的起始位置,partition值,value的长度.
+
 ###### Shuffle整个流程分了四步. 
 1. 在map task执行时,它的输入数据来源于HDFS的block,当然在MapReduce概念中,map task只读取split.Split与block的对应关系可能是多对一,默认是一对一.在WordCount例子里,假设map的输入数据都是像“aaa”这样的字符串. 
 2. 在经过mapper的运行后,我们得知mapper的输出是这样一个key/value对:key是"aaa",value是数值1.因为当前map端只做加1的操作,在reduce task里才去合并结果集.前面我们知道这个job有3个reduce task,到底当前的“aaa”应该交由哪个reduce去做呢,是需要现在决定的. 
