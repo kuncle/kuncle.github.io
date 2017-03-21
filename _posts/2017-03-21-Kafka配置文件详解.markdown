@@ -6,9 +6,10 @@ categories: Kafka
 tags: Kafka
 ---
 #### Kafka配置文件详解
-* broker的全局配置
-  最为核心的三个配置 broker.id、log.dir、zookeeper.connect
+
 ``` shell
+broker的全局配置
+最为核心的三个配置 broker.id、log.dir、zookeeper.connect
 ------------------------------------------- 系统 相关 -------------------------------------------
 \##每一个broker在集群中的唯一标示，要求是正数。在改变IP地址，不改变broker.id的话不会影响consumers
 broker.id = 1
@@ -211,6 +212,7 @@ zookeeper.connection.timeout.ms = 6000
  
 \## ZooKeeper集群中leader和follower之间的同步实际那
 zookeeper.sync.time.ms = 2000
+
 配置的修改
 其中一部分配置是可以被每个topic自身的配置所代替，例如
 新增配置
@@ -221,11 +223,9 @@ bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic my-topic --config
  
 删除配置 ：
 bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic my-topic --deleteConfig max.message.bytes
-```
 
-* Consumer配置
+Consumer配置
 最为核心的配置是group.id、zookeeper.connect
-``` shell
 \## Consumer归属的组ID，broker是根据group.id来判断是队列模式还是发布订阅模式，非常重要
  group.id
  
@@ -288,11 +288,9 @@ bin/kafka-topics.sh --zookeeper localhost:2181 --alter --topic my-topic --delete
  
 \## 指定时间内没有消息到达就抛出异常，一般不需要改
  consumer.timeout.ms = -1
-```
 
-* Producer的配置
+Producer的配置
 比较核心的配置：metadata.broker.list、request.required.acks、producer.type、serializer.class
-``` shell
 \## 消费者获取消息元信息(topics, partitions and replicas)的地址,配置格式是：host1:port1,host2:port2，也可以在外面设置一个vip
  metadata.broker.list
  
