@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "使用log4j向Kafka直接打数据异常"
-date:   2017-03-13 21:25:00
+date:   2017-03-22 11:30:00
 categories: Kafka
 tags: Kafka
 ---
