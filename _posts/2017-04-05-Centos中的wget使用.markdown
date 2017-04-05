@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Centos中的wget使用"
-date:   2017-03-13 21:25:00
+date:   2017-04-05 16:25:00
 categories: Linux
 tags: Linux
 ---
