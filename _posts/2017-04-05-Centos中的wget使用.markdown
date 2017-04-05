@@ -25,9 +25,9 @@ Usage: wget [OPTION]… [URL]…
 ###### 在不稳定的网络上下载一个部分下载的文件，以及在空闲时段下载 
 * wget -t 0 -w 31 -c http://dsec.pku.edu.cn/BBC.avi -o down.log & 
 * 或者从filelist读入要下载的文件列表 
-wget -t 0 -w 31 -c -B ftp://dsec.pku.edu.cn/linuxsoft -i filelist.txt -o 
-down.log & 
+* wget -t 0 -w 31 -c -B ftp://dsec.pku.edu.cn/linuxsoft -i filelist.txt -o down.log & 
 (上面的代码还可以用来在网络比较空闲的时段进行下载。我的用法是:在mozilla中将不方便当时下载的URL链接拷贝到内存中然后粘贴到文件filelist.txt中，在晚上要出去系统前执行上面代码的第二条)
+
 ######　使用代理下载 
 * wget -Y on -p -k https://sourceforge.net/projects/wvware/ 
 (代理可以在环境变量或wgetrc文件中设定,在环境变量中设定代理 :export PROXY=http://211.90.168.94:8080/ ; 在~/.wgetrc中设定代理 :
