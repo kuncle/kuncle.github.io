@@ -28,7 +28,7 @@ Usage: wget [OPTION]… [URL]…
 * wget -t 0 -w 31 -c -B ftp://dsec.pku.edu.cn/linuxsoft -i filelist.txt -o down.log & 
 (上面的代码还可以用来在网络比较空闲的时段进行下载。我的用法是:在mozilla中将不方便当时下载的URL链接拷贝到内存中然后粘贴到文件filelist.txt中，在晚上要出去系统前执行上面代码的第二条)
 
-######　使用代理下载 
+###### 使用代理下载 
 * wget -Y on -p -k https://sourceforge.net/projects/wvware/ 
 (代理可以在环境变量或wgetrc文件中设定,在环境变量中设定代理 :export PROXY=http://211.90.168.94:8080/ ; 在~/.wgetrc中设定代理 :
 http_proxy = http://proxy.yoyodyne.com:18023/ 
