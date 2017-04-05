@@ -6,7 +6,7 @@ categories: Hive
 tags: Hive
 ---
 转自：http://paddy-w.iteye.com/blog/2081409
-遇到一个Hive需求：有A、B、C三列，按A列进行聚合，求出C列聚合后的最小值和最大值各自对应的B列值。这个需求用hql和内建函数也可完成，但是比较繁琐，会解析成几个MR进行执行，如果自定义UDAF便可只利用一个MR完成任务。
+<br>遇到一个Hive需求：有A、B、C三列，按A列进行聚合，求出C列聚合后的最小值和最大值各自对应的B列值。这个需求用hql和内建函数也可完成，但是比较繁琐，会解析成几个MR进行执行，如果自定义UDAF便可只利用一个MR完成任务。
 所用Hive为0.13.1版本。UDAF有两种，第一种是比较简单的形式，利用抽象类UDAF和UDAFEvaluator，暂不做讨论。主要说一下第二种形式，利用接口GenericUDAFResolver2（或者抽象类AbstractGenericUDAFResolver）和抽象类GenericUDAFEvaluator。
 ###### 这里用AbstractGenericUDAFResolver做说明.
 ``` java
