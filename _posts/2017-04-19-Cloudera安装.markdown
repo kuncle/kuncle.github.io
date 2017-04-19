@@ -52,10 +52,12 @@ tags: Cloudera
 #### CM安装:
 * 1,配置本地yum源
     在/etc/yum.repos.d/目录下创建文件cloudera-manager.repo 文件内容为：
+``` shell
     [cloudera-manager] 
     name=ClouderaManager,Version5.10.0 
     baseurl=http://自己机器ip/cm （都指定已经上传安装包的那一台机器即可） 
     gpgcheck=0
+```
 * 2,验证本地yum源
     将上一步baseurl地址粘贴到浏览器确认是否能正常访问到已经上传安装文件的机器的安装文件目录(注意开启httpd服务)
 * 3,开始安装
