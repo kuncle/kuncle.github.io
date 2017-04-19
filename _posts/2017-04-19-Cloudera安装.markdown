@@ -30,7 +30,7 @@ tags: Cloudera
     /var/www/html/cloudera-manager-installer5.10.0.bin
     ```
     
-####　安装环境准备：
+#### 安装环境准备：
 * 1,修改hosts
     vi /etc/hosts
     添加其他机器ip与主机名映射 如192.168.1.2 master 根据自己实际情况指定 
