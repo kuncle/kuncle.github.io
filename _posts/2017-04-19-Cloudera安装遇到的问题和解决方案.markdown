@@ -160,4 +160,5 @@ log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more in
 ``` shell
 cd /opt/cloudera/parcels/CDH-5.10.0-1.cdh5.10.0.p0.41/lib/sqoop2/webapps/sqoop/WEB-INF/lib
 mv log4j-1.2.16.jar log4j-1.2.16.jar.bak
+刚开始我修改的/var/lib/sqoop2/tomcat-deployment/webapps/sqoop 目录下的pom文件和jar包，发现每次重启sqoop2，这个目录下的文件都会被覆盖，后来，通过 find / -name sqoop.war命令查找到/opt/cloudera/parcels/CDH-5.10.0-1.cdh5.10.0.p0.41/lib/sqoop2/ 这个目录下也存在，测试修改了下这个目录下的文件，生效了
 ```
