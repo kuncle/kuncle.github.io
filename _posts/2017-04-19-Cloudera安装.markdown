@@ -4,7 +4,7 @@ title:  "Cloudera安装"
 date:   2017-04-19 17:00:00
 categories: Cloudera
 tags: Cloudera
-----
+---
 #### 安装介质准备：
 * 1,Cloudera Manager 安装包（rpm 包）
 ``` java
