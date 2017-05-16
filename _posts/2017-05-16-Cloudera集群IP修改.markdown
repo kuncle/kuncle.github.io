@@ -5,7 +5,6 @@ date:   2017-05-16 13:55:00
 categories: Cloudera
 tags: Cloudera
 ---
-由于公司ip号段已用满,需要开新号段ip,导致服务器ip全迁移到新号段上.
 1, 首先在安装cloudera-manager的主机上，停止所有的cloudera管理进程
 ``` shell
 service cloudera-scm-agent stop
@@ -39,10 +38,12 @@ postgresql: update hosts set (ip_address) = ('新的ip') where host_id='1';
 ``` shell
 vi /etc/cloudera-scm-agent/config.ini
 修改host为新的ip
+```
 
 6, 修改各主机的/etc/hosts文件，将现在的hostname与ip地址对应上
 
 7, 重启服务
+``` shell
 service cloudera-scm-server-db start(我用的外部数据库mysql,所以不需要这步)
 service cloudera-scm-server start
 service cloudera-scm-agent start
