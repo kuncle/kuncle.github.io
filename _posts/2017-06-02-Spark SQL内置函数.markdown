@@ -1,0 +1,57 @@
+---
+layout: post
+title:  "Spark SQL内置函数"
+date:   2017-06-02 11:25:00
+categories: Spark
+tags: Spark
+---
+* 聚合函数
+``` shell
+approxCountDistinct, avg, count, countDistinct, first, last, max, mean, min, sum, sumDistinct
+```
+
+* 集合函数
+``` shell
+array_contains, explode, size, sort_array
+```
+
+* 日期时间转换
+``` shell
+unix_timestamp, from_unixtime, to_date, quarter, day, dayofyear, weekofyear, from_utc_timestamp, to_utc_timestamp 
+```
+
+* 从日期时间中提取字段
+``` shell
+year, month, dayofmonth, hour, minute, second
+```
+
+* 日期/时间计算
+``` shell
+datediff, date_add, date_sub, add_months, last_day, next_day, months_between 
+```
+
+* 获取当前时间等 
+``` shell
+current_date, current_timestamp, trunc, date_format
+```
+
+* 数学函数
+``` shell
+abs, acros, asin, atan, atan2, bin, cbrt, ceil, conv, cos, sosh, exp, expm1, factorial, floor, hex, hypot, log, log10, log1p, log2, pmod, pow, rint, round, shiftLeft, shiftRight, shiftRightUnsigned, signum, sin, sinh, sqrt, tan, tanh, toDegrees, toRadians, unhex
+```
+
+* 混合函数
+``` shell
+array, bitwiseNOT, callUDF, coalesce, crc32, greatest, if, inputFileName, isNaN, isnotnull, isnull, least, lit, md5, monotonicallyIncreasingId, nanvl, negate, not, rand, randn, sha, sha1, sparkPartitionId, struct, when
+```
+
+* 字符串函数
+``` shell
+ascii, base64, concat, concat_ws, decode, encode, format_number, format_string, get_json_object, initcap, instr, length, levenshtein, locate, lower, lpad, ltrim, printf, regexp_extract, regexp_replace, repeat, reverse, rpad, rtrim, soundex, space, split, substring, substring_index, translate, trim, unb
+```
+
+* 窗口函数
+``` shell
+cumeDist, denseRank, lag, lead, ntile, percentRank, rank, rowNumber
+ase64, upper
+```
