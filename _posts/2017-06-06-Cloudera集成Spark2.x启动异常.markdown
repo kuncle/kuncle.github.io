@@ -16,7 +16,8 @@ cp -r /etc/spark/conf.cloudera.spark_on_yarn/ /etc/spark2/conf/
 ``` shell
 vi spark-env.sh
 export SPARK_HOME=/xxx/cloudera/parcels/SPARK2-2.1.0.cloudera1-1.cdh5.7.0.p0.120904/lib/spark2
-
+```
+``` shell
 vi spark-defaults.conf
 spark.yarn.jars=/xxx/cloudera/parcels/SPARK2-2.1.0.cloudera1-1.cdh5.7.0.p0.120904/lib/spark2/jars/* (这里你可以后续改为HDFS路径)
 spark.master=yarn
