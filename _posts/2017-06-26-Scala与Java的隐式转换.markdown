@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Yarn权限配置"
+title:  "Scala与Java的隐式转换"
 date:   2017-03-13 21:25:00
 categories: Scala
 tags: Scala
