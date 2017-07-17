@@ -11,7 +11,6 @@ tags: Zeppelin
 ``` shell
 cp zeppelin-env.sh.template zeppelin-env.sh
 cp zeppelin-site.xml.template zeppelin-site.xml
-
 修改 zeppelin-env.sh
 export SPARK_HOME=/opt/cloudera/parcels/SPARK2/lib/spark2
 export HADOOP_CONF_DIR=/opt/cloudera/parcels/CDH/lib/hadoop
@@ -20,7 +19,6 @@ export MASTER="yarn-client"
 export ZEPPELIN_PID_DIR=/var/run/zeppelin
 export ZEPPELIN_LOG_DIR=/var/log/zeppelin
 export ZEPPELIN_CLASSPATH="${SPARK_CLASSPATH}"
-
 修改 zeppelin-site.xml
 <property>
   <name>zeppelin.server.port</name>
