@@ -70,7 +70,7 @@ if __name__=="__main__":
 
 #### 网络拓扑机器之间的距离
 这里基于一个网络拓扑案例，介绍在复杂的网络拓扑中hadoop集群每台机器之间的距离
-![rock](../assets/img/nternet-rock.jpg)
+![rock](https://github.com/kuncle/kuncle.github.io/blob/master/assets/img/nternet-rock.jpg)
 有了机架感知，NameNode就可以画出上图所示的datanode网络拓扑图。D1,R1都是交换机，最底层是datanode。则H1的rackid=/D1/R1/H1，H1的parent是R1，R1的是D1。这些rackid信息可以通过topology.script.file.name配置。有了这些rackid信息就可以计算出任意两台datanode之间的距离。
 ``` shell
 distance(/D1/R1/H1,/D1/R1/H1)=0  相同的datanode
