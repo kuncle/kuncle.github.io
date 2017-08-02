@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "数据归一化处理"
+title:  "数据归一化处理（转）"
 date:   2017-08-02 14:15:00
 categories: Spark
 tags: Spark
@@ -222,3 +222,4 @@ from sklearn import preprocessing
 enc = preprocessing.OneHotEncoder(sparse=False)
 onehot = enc.fit_transform(nominal.values)
 ```
+转自：http://blog.csdn.net/pipisorry/article/details/52247379
