@@ -1,0 +1,13 @@
+---
+layout: post
+title:  "SELECT返回指定区间行"
+date:   2017-08-02 15:55:00
+categories: Oracle
+tags: Oracle
+---
+* ORACLE伪列ROWNUM 中包含有当前的行号,但ROWNUM只能做 < 或者 <= 操作,而不能做 > 或者 >= 以及 BETWEEN 操作,如:   
+Select * from dba_users where rownum<=10; --是可以的
+Select * from dba_users where rownum>=10; --将不返回任何记录
+* 解决方案
+select * from (select rownum rownumber,tn.* from tableName tn where rownum <= 3) t where t.rownumber >= 2;
+子查询中的rownum必须有别名.
