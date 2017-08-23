@@ -76,12 +76,16 @@ class SparkContext(config: SparkConf) extends Logging {
    
    // "_jobProgressListener" should be set up before creating SparkEnv because when creating
    // "SparkEnv", some messages will be posted to "listenerBus" and we should not miss them.
-   负责监听事件并把事件消息发送给listenerBus
-  _jobProgressListener = new JobProgressListener(_conf)
+   负责监听事件并把事件消息发送给listenerBus  但是将要removed了           
+   _jobProgressListener = new JobProgressListener(_conf)
   listenerBus.addListener(jobProgressListener)
 ```
 接着创建SparkEnv
 ``` shell
+    // Create the Spark execution environment (cache, map output tracker, etc)
+    _env = createSparkEnv(_conf, isLocal, listenerBus)
+    SparkEnv.set(_env)
+   ......
   // This function allows components created by SparkEnv to be mocked in unit tests:
   private[spark] def createSparkEnv(
       conf: SparkConf,
@@ -90,4 +94,176 @@ class SparkContext(config: SparkConf) extends Logging {
       实际是创建的driverEnv
     SparkEnv.createDriverEnv(conf, isLocal, listenerBus, SparkContext.numDriverCores(master))
   }
+  ......
+  /**
+   * Create a SparkEnv for the driver.
+   */
+  private[spark] def createDriverEnv(
+      conf: SparkConf,
+      isLocal: Boolean,
+      listenerBus: LiveListenerBus,
+      numCores: Int,
+      mockOutputCommitCoordinator: Option[OutputCommitCoordinator] = None): SparkEnv = {
+     断言driver host & port
+    assert(conf.contains(DRIVER_HOST_ADDRESS),
+      s"${DRIVER_HOST_ADDRESS.key} is not set on the driver!")
+    assert(conf.contains("spark.driver.port"), "spark.driver.port is not set on the driver!")
+    val bindAddress = conf.get(DRIVER_BIND_ADDRESS)
+    val advertiseAddress = conf.get(DRIVER_HOST_ADDRESS)
+    val port = conf.get("spark.driver.port").toInt
+    是否传输加密
+    val ioEncryptionKey = if (conf.get(IO_ENCRYPTION_ENABLED)) {
+      Some(CryptoStreamUtils.createKey(conf))
+    } else {
+      None
+    }
+    调用SparkEnv的create
+  /**
+   * Helper method to create a SparkEnv for a driver or an executor.
+   */
+    create(
+      conf,
+      SparkContext.DRIVER_IDENTIFIER,
+      bindAddress,
+      advertiseAddress,
+      Option(port),
+      isLocal,
+      numCores,
+      ioEncryptionKey,
+      listenerBus = listenerBus,
+      mockOutputCommitCoordinator = mockOutputCommitCoordinator
+    )
+    这个create包含SecurityManager，Serializer，BroadcastManager，registerOrLookupEndpoint，
+    ShuffleManager，useLegacyMemoryManager，BlockManager，MetricsSystem等的创建
+   }
+  
+```
+然后是低级别状态报告api，负责监听job和stage的进度
+``` shell
+      /**
+       * Low-level status reporting APIs for monitoring job and stage progress.
+       *
+       * These APIs intentionally provide very weak consistency semantics; consumers of these APIs should
+       * be prepared to handle empty / missing information.  For example, a job's stage ids may be known
+       * but the status API may not have any information about the details of those stages, so
+       * `getStageInfo` could potentially return `None` for a valid stage id.
+       *
+       * To limit memory usage, these APIs only provide information on recent jobs / stages.  These APIs
+       * will provide information for the last `spark.ui.retainedStages` stages and
+       * `spark.ui.retainedJobs` jobs.
+       *
+       * NOTE: this class's constructor should be considered private and may be subject to change.
+       */
+    _statusTracker = new SparkStatusTracker(this)
+```
+接着是进度条，ui，hadoop conf，executor memory，心跳 等配置
+``` shell
+    // We need to register "HeartbeatReceiver" before "createTaskScheduler" because Executor will
+    // retrieve "HeartbeatReceiver" in the constructor. (SPARK-6640)
+    _heartbeatReceiver = env.rpcEnv.setupEndpoint(
+        /**
+         * Retrieve the [[RpcEndpointRef]] represented by `address` and `endpointName`.
+         * This is a blocking action.
+         * 注册heartbeatReceiver的Endpoint到rpcEnv上面并返回他对应的Reference
+         */
+      HeartbeatReceiver.ENDPOINT_NAME, new HeartbeatReceiver(this))
+```
+然后最重要的TaskScheduler & DAGScheduler
+``` shell
+    // Create and start the scheduler
+    会根据master匹配对应的SchedulerBackend和TaskSchedulerImpl创建方式
+    val (sched, ts) = SparkContext.createTaskScheduler(this, master, deployMode)
+    // Create and start the scheduler
+    _schedulerBackend = sched
+    _taskScheduler = ts
+    创建DAGScheduler
+    _dagScheduler = new DAGScheduler(this)
+    心跳
+    _heartbeatReceiver.ask[Boolean](TaskSchedulerIsSet)
+
+    // start TaskScheduler after taskScheduler sets DAGScheduler reference in DAGScheduler's
+    // constructor
+    启动TaskScheduler
+    _taskScheduler.start()
+    获取appid 不同模式不一样
+    local模式为："local-" + System.currentTimeMillis
+    _applicationId = _taskScheduler.applicationId()
+    _applicationAttemptId = taskScheduler.applicationAttemptId()
+    _conf.set("spark.app.id", _applicationId)
+    if (_conf.getBoolean("spark.ui.reverseProxy", false)) {
+      System.setProperty("spark.ui.proxyBase", "/proxy/" + _applicationId)
+    }
+    _ui.foreach(_.setAppId(_applicationId))
+      /**
+       * Initializes the BlockManager with the given appId. This is not performed in the constructor as
+       * the appId may not be known at BlockManager instantiation time (in particular for the driver,
+       * where it is only learned after registration with the TaskScheduler).
+       *
+       * This method initializes the BlockTransferService and ShuffleClient, registers with the
+       * BlockManagerMaster, starts the BlockManagerWorker endpoint, and registers with a local shuffle
+       * service if configured.
+       */
+    _env.blockManager.initialize(_applicationId)
+```
+接下来metrics system 测量系统，提供个ui展示
+``` shell
+    // The metrics system for Driver need to be set spark.app.id to app ID.
+    // So it should start after we get app ID from the task scheduler and set spark.app.id.
+    _env.metricsSystem.start()
+    // Attach the driver metrics servlet handler to the web ui after the metrics system is started.
+    _env.metricsSystem.getServletHandlers.foreach(handler => ui.foreach(_.attachHandler(handler)))
+
+```
+然后_eventLogger和动态资源分配模式
+``` shell
+    // Optionally scale number of executors dynamically based on workload. Exposed for testing.
+    通过spark.dynamicAllocation.enabled参数开启后就会启动ExecutorAllocationManager
+    val dynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(_conf)
+    _executorAllocationManager =
+      if (dynamicAllocationEnabled) {
+        schedulerBackend match {
+          case b: ExecutorAllocationClient =>
+            // An agent that dynamically allocates and removes executors based on the workload.
+            根据集群资源动态触发增加或者删除资源策略
+            Some(new ExecutorAllocationManager(
+              schedulerBackend.asInstanceOf[ExecutorAllocationClient], listenerBus, _conf))
+          case _ =>
+            None
+        }
+      } else {
+        None
+      }
+    _executorAllocationManager.foreach(_.start())
+
+```
+然后cleaner
+``` shell
+   _cleaner =
+      if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
+      /**
+       * An asynchronous cleaner for RDD, shuffle, and broadcast state.
+       *
+       * This maintains a weak reference for each RDD, ShuffleDependency, and Broadcast of interest,
+       * to be processed when the associated object goes out of scope of the application. Actual
+       * cleanup is performed in a separate daemon thread.
+       */
+        Some(new ContextCleaner(this))
+      } else {
+        None
+      }
+    _cleaner.foreach(_.start())
+```
+最后shutdown hook
+``` shell
+    // Make sure the context is stopped if the user forgets about it. This avoids leaving
+    // unfinished event logs around after the JVM exits cleanly. It doesn't help if the JVM
+    // is killed, though.
+    logDebug("Adding shutdown hook") // force eager creation of logger
+    // ShutdownHookManager相比JVM本身的执行Hook方式具有如下两种特性（默认JVM执行，无序，并发）
+    // 1.顺序  2.有优先级
+    _shutdownHookRef = ShutdownHookManager.addShutdownHook(
+      ShutdownHookManager.SPARK_CONTEXT_SHUTDOWN_PRIORITY) { () =>
+      logInfo("Invoking stop() from shutdown hook")
+      stop()
+    }
 ```
