@@ -6,7 +6,7 @@ categories: JVM
 tags: JVM
 ---
 根据 JVM 规范，JVM 内存共分为虚拟机栈、堆、方法区、程序计数器、本地方法栈五个部分。
-* 虚拟机栈
+* 虚拟机栈   
 每个线程有一个私有的栈，随着线程的创建而创建。栈里面存着的是一种叫“栈帧”的东西，每个方法会创建一个栈帧，栈帧中存放了局部变量表（基本数据类型和对象引用）、操作数栈、方法出口等信息。栈的大小可以固定也可以动态扩展。当栈调用深度大于JVM所允许的范围，会抛出StackOverflowError的错误，不过这个深度范围不是一个恒定的值，我们通过下面这段程序可以测试一下这个结果：
 ``` shell
 public class StackErrorMock {
@@ -28,14 +28,15 @@ public class StackErrorMock {
     }
 }
 ```
-运行三次，可以看出每次栈的深度都是不一样的，输出结果如下:
+运行三次，可以看出每次栈的深度都是不一样的，输出结果如下:   
+
 ``` shell
 Stack deep : 11422
 java.lang.StackOverflowError
 	at StackErrorMock.call(StackErrorMock.java:6)
 	at StackErrorMock.call(StackErrorMock.java:7)
 	at StackErrorMock.call(StackErrorMock.java:7)
-  
+ 
 Stack deep : 21846
 java.lang.StackOverflowError
 	at StackErrorMock.call(StackErrorMock.java:7)
@@ -48,14 +49,18 @@ java.lang.StackOverflowError
 	at StackErrorMock.call(StackErrorMock.java:7)
 	at StackErrorMock.call(StackErrorMock.java:7)
 ```
-虚拟机栈除了上述错误外，还有另一种错误，那就是当申请不到空间时，会抛出 OutOfMemoryError。这里有一个小细节需要注意，catch 捕获的是 Throwable，而不是 Exception。因为 StackOverflowError 和 OutOfMemoryError 都不属于 Exception 的子类。
-* 本地方法栈
+   
+虚拟机栈除了上述错误外，还有另一种错误，那就是当申请不到空间时，会抛出 OutOfMemoryError。这里有一个小细节需要注意，catch 捕获的是 Throwable，而不是 Exception。因为 StackOverflowError 和 OutOfMemoryError 都不属于 Exception 的子类。   
+
+* 本地方法栈   
 这部分主要与虚拟机用到的 Native 方法相关，一般情况下， Java 应用程序员并不需要关心这部分的内容。
-* PC 寄存器
+
+* PC 寄存器   
 PC 寄存器，也叫程序计数器。JVM支持多个线程同时运行，每个线程都有自己的程序计数器。倘若当前执行的是 JVM 的方法，则该寄存器中保存当前执行指令的地址；倘若执行的是native 方法，则PC寄存器中为空。
-* 堆
+* 堆   
 堆内存是 JVM 所有线程共享的部分，在虚拟机启动的时候就已经创建。所有的对象和数组都在堆上进行分配。这部分空间可通过 GC 进行回收。当申请不到空间时会抛出 OutOfMemoryError。   
 下面我们简单的模拟一个堆内存溢出的情况：
+
 ``` shell
 import java.util.ArrayList;
 import java.util.List;
@@ -77,14 +82,15 @@ public class HeapOomMock {
         }
     }
 }
-```
+```   
 运行上述代码，输出结果如下:
 ``` shell
 java.lang.OutOfMemoryError: Java heap space
 	at HeapOomMock.main(HeapOomMock.java:12)
 count=1676
 ```
-* 方法区
+
+* 方法区   
 方法区也是所有线程共享。主要用于存储类的信息、常量池、方法数据、方法代码等。方法区逻辑上属于堆的一部分，但是为了与堆进行区分，通常又叫“非堆”。
 
 #### PermGen（永久代）
@@ -168,8 +174,8 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
     
 #### 总结
 通过上面分析，大家应该大致了解了 JVM 的内存划分，也清楚了 JDK 8 中永久代向元空间的转换。至于为什么要这么做，可能是以下几点原因：
-1 字符串存在永久代中，容易出现性能问题和内存溢出
-2 类及方法的信息等比较难确定其大小，因此对于永久代的大小指定比较困难，PermSize指定太小容易造成永久代OOM
-3 永久代会为 GC 带来不必要的复杂度，并且回收效率偏低
-4 Oracle 可能会将HotSpot 与 JRockit 合二为一
+1. 字符串存在永久代中，容易出现性能问题和内存溢出
+2. 类及方法的信息等比较难确定其大小，因此对于永久代的大小指定比较困难，PermSize指定太小容易造成永久代OOM
+3. 永代会为 GC 带来不必要的复杂度，并且回收效率偏低
+4. Oracle 可能会将HotSpot 与 JRockit 合二为一
   
