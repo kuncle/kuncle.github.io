@@ -1,0 +1,23 @@
+---
+layout: post
+title:  "Flume遇到的问题"
+date:   2017-08-24 13:25:00
+categories: Flume
+tags: Flume
+---
+* channel溢出
+``` shell
+ERROR - org.apache.flume.source.AvroSource.appendBatch(AvroSource.Java:341)]    
+  Avro source seqGenSrc1: Unable to process event batch. Exception follows.    
+  org.apache.flume.ChannelException: Unable to put batch on required channel:    
+  org.apache.flume.channel.MemoryChannel{name: memoryChannel}
+```
+一般情况下修改capacity，transactionCapacity，调大就可以解决
+
+* java.lang.OutOfMemoryError: Java heap space    
+调整flume启动配置文件–flume-env.sh里面的Java参数，将-Xms1024m -Xmx2048m值增大，两项参数分别表示最小和最大java堆大小
+
+* 若输出的字符串为空（即打印到屏幕上无任何显示），flume会因读取不到数据而报错，故不要将空字符串打印输出，比如可以将其赋值为null。
+
+
+
