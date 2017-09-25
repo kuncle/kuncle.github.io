@@ -7,9 +7,8 @@ tags: Titan
 ---
 * 图数据库选型   
 
-重要：在Titan的原始团队被DataStar收购后,Titan停滞在1.0.0版本后不再更新。来自Linux Foundation开源社区的爱好者在Titan基础上开发了
+重要：在Titan的原始团队被DataStar收购后,Titan停滞在1.0.0版本后不再更新。来自Linux Foundation开源社区的爱好者在Titan基础上开发了JanusGraph.https://github.com/JanusGraph/janusgraph
 
-JanusGraph.https://github.com/JanusGraph/janusgraph
 目前市面上比较知名的图数据库主要是Neo4j和Titan.   
 这里是这两个数据库的对比：https://db-engines.com/en/system/Neo4j;Titan   
 至于为什么我选择Titan,主要是基于Titan是基于Apache v2 开源协议.而且对公司现有大数据平台的无缝结合.   
