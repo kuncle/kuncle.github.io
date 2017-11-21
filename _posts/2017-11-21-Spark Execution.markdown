@@ -13,14 +13,14 @@ $SPARK_HOME/bin/spark-submit --class org.apress.prospark.TranslateApp --master l
 ```
 
 * Standalone Cluster
-在该模式下，Driver可以在提交job的机器上执行： 
+在该模式下，Driver可以在提交job的机器上执行
 ``` shell
 $SPARK_HOME/bin/spark-submit --class org.apress.prospark.TranslateApp --master <master_
 url> ./target/scala-2.10/FirstApp-assembly-1.0.jar <app_name> <book_path> <output_path>
 <language>
 ```
 ![standalone_cluster1](/assets/img/standalone cluster1.png)
-也可以在集群中运行Driver：   
+也可以在集群中运行Driver   
 ``` shell
 $SPARK_HOME/bin/spark-submit ¨Cclass org.apress.prospark.TranslateApp --master <master_url>
 --deploy-mode cluster ./target/scala-2.10/FirstApp-assembly-1.0.jar <app_name> <book_path>
@@ -30,7 +30,7 @@ $SPARK_HOME/bin/spark-submit ¨Cclass org.apress.prospark.TranslateApp --master 
 这两种方式的job都在work上执行，只是Driver的执行位置不同而已。
 
 * Yarn
-和standalone模式一样，Driver可以在Client执行：   
+和standalone模式一样，Driver可以在Client执行 
 ``` shell
 $SPARK_HOME/bin/spark-submit --class org.apress.prospark.TranslateApp --master yarn --deploy-mode client
 ./target/scala-2.10/FirstApp-assembly-1.0.jar <app_name> <book_path> <output_path> <language>
