@@ -6,7 +6,7 @@ categories: Linux
 tags: Linux
 ---
 * supervise是daemontools的一个工具，可以用来监控管理unix下的应用程序运行情况，在应用程序出现异常时，supervise可以重新启动指定程序。
-* 安装   
+* 安装
 ``` shell
 (http://cr.yp.to/daemontools/install.html)
 How to install daemontools
