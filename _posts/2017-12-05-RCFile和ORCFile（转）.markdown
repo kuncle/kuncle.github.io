@@ -51,3 +51,13 @@ Hive读取数据的时候，根据FileFooter读出Stripe的信息，根据IndexD
 ORCFile扩展了RCFile的压缩，除了Run-length（游程编码），引入了字典编码和Bit编码。
 采用字典编码，最后存储的数据便是字典中的值，每个字典值得长度以及字段在字典中的位置
 至于Bit编码，对所有字段都可采用Bit编码来判断该列是否为null，如果为null则Bit值存为0，否则存为1，对于为null的字段在实际编码的时候不需要存储，也就是说字段若为null，是不占用存储空间的。
+
+#### RCFile格式相比，ORC File格式的优点
+1. 每个task只输出单个文件，这样可以减少NameNode的负载；
+2. 支持各种复杂的数据类型，比如： datetime, decimal, 以及一些复杂类型(struct, list, map, and union)
+3. 在文件中存储了一些轻量级的索引数据；
+4. 基于数据类型的块模式压缩：a、integer类型的列用行程长度编码(run-length encoding);b、String类型的列用字典编码(dictionary encoding)；
+5. 用多个互相独立的RecordReaders并行读相同的文件；
+6. 无需扫描markers就可以分割文件；
+7. 绑定读写所需要的内存；
+8. metadata的存储是用 Protocol Buffers的，所以它支持添加和删除一些列。
