@@ -6,6 +6,7 @@ categories: Spark
 tags: Spark
 ---
 #### FTRL的scala实现
+``` scala 
 import breeze.linalg.{DenseVector, _}
 import breeze.numerics._
 import org.apache.spark.sql.{Dataset, SparkSession}
@@ -158,3 +159,4 @@ object Application{
     println("minutes -> ", minutes)
   }
 }
+``` 
