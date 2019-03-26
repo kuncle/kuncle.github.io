@@ -17,8 +17,8 @@ tags: Other
 * jaeger
 
 #### paper
-https://ai.google/research/pubs/pub36356
-https://ai.google/research/pubs/pub40378
+*https://ai.google/research/pubs/pub36356
+*https://ai.google/research/pubs/pub40378
 
 * refer
 http://peter.bourgon.org/blog/2017/02/21/metrics-tracing-and-logging.html
