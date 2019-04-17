@@ -19,14 +19,14 @@ $SPARK_HOME/bin/spark-submit --class org.apress.prospark.TranslateApp --master <
 url> ./target/scala-2.10/FirstApp-assembly-1.0.jar <app_name> <book_path> <output_path>
 <language>
 ```
-![standalone_cluster1](/assets/img/standalone cluster1.png)
+![standalone_cluster1](../assets/img/standalone cluster1.png)
 也可以在集群中运行Driver   
 ``` shell
 $SPARK_HOME/bin/spark-submit ¨Cclass org.apress.prospark.TranslateApp --master <master_url>
 --deploy-mode cluster ./target/scala-2.10/FirstApp-assembly-1.0.jar <app_name> <book_path>
 <output_path> <language>
 ```
-![standalone_cluster2](/assets/img/standalone cluster2.png)
+![standalone_cluster2](../assets/img/standalone cluster2.png)
 这两种方式的job都在work上执行，只是Driver的执行位置不同而已。
 
 * Yarn

@@ -8,7 +8,7 @@ tags: Hadoop
 应用程序通过创建新文件以及向新文件写数据的方式，给HDFS系统添加数据。文件关闭以后，被写入的数据就无法再修改或者删除，只有以“追加”方式重新打开文件后，才能再次为文件添加数据。HDFS采用单线程写，多线程读的模式。
 
 * 读文件
-![hdfs_read](/upload/hdfs_read.png)
+![hdfs_read](../upload/hdfs_read.png)
 1. 首先调用FileSystem对象的open方法，其实是一个DistributedFileSystem的实例
 2. DistributedFileSystem通过rpc获得文件的第一批个block的locations，同一block按照replaction会返回多个locations，这些locations按照hadoop拓扑结构排序，距离客户端近的排在前面.
 3. 前两步会返回一个FSDataInputStream对象，该对象会被封装成DFSInputStream对象，DFSInputStream可以方便的管理datanode和namenode数据流。客户端调用read方法，DFSInputStream最会找出离客户端最近的datanode并连接。
@@ -23,7 +23,7 @@ HDFS允许客户端从正在进行写操作的文件中读取数据。当进行�
 HDFS I/O的设计是专门针对批处理系统进行优化的，比如MapReduce系统，这类系统对顺序读写的吞吐量都有很高的要求。针对于那些需要实时数据流以及随机读写级别的应用来说，系统的读/写响应时间还有待于优化，目前正在做这方面的努力。
 
 * 写文件
-![hdfs_write](/upload/hdfs_write.png)
+![hdfs_write](../upload/hdfs_write.png)
 1. 客户端通过调用DistributedFileSystem的create方法创建新文件
 2. DistributedFileSystem通过RPC调用namenode去创建一个没有blocks关联的新文件，创建前，namenode会做各种校验，比如文件是否存在，客户端有无权限去创建等。如果校验通过，namenode就会记录下新文件，否则就会抛出IO异常.
 3. 前两步结束后会返回FSDataOutputStream的对象，象读文件的时候相似，FSDataOutputStream被封装成DFSOutputStream.DFSOutputStream可以协调namenode和datanode。客户端开始写数据到DFSOutputStream,DFSOutputStream会把数据切成一个个小packet，然后排成队列data quene。

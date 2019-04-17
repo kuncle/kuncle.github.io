@@ -1,14 +1,14 @@
 ## RCFile
 
 RCFile文件格式是FaceBook开源的一种Hive的文件存储格式，首先将表分为几个行组，对每个行组内的数据进行按列存储，每一列的数据都是分开存储，正是先水平划分，再垂直划分的理念。
-![shuffle](/assets/img/1.png)
+![shuffle](../assets/img/1.png)
 
 #### 存储结构  
 如上图是HDFS内RCFile的存储结构，我们可以看到，首先对表进行行划分，分成多个行组。一个行组主要包括：16字节的HDFS同步块信息，主要是为了区分一个HDFS块上的相邻行组；元数据的头部信息主要包括该行组内的存储的行数、列的字段信息等等；数据部分我们可以看出RCFile将每一行，存储为一列，将一列存储为一行，因为当表很大，我们的字段很多的时候，我们往往只需要取出固定的一列就可以。
 在一般的行存储中 select a from table，虽然只是取出一个字段的值，但是还是会遍历整个表，所以效果和select * from table 一样，在RCFile中，像前面说的情况，只会读取该行组的一行。
 在一般的列存储中，会将不同的列分开存储，这样在查询的时候会跳过某些列，但是有时候存在一个表的有些列不在同一个HDFS块上（如下图），所以在查询的时候，Hive重组列的过程会浪费很多IO开销
 
-![shuffle](/assets/img/2.png)
+![shuffle](../assets/img/2.png)
 
 #### 列存储
 而RCFile由于相同的列都是在一个HDFS块上，所以相对列存储而言会节省很多资源
@@ -26,7 +26,7 @@ select c from table where a > 1
 
 ## ORCFile
 ORC是在一定程度上扩展了RCFile，是对RCFile的优化。
-![shuffle](/assets/img/3.png)
+![shuffle](../assets/img/3.png)
 
 #### 存储结构
 根据结构图，我们可以看到ORCFile在RCFile基础上引申出来Stripe和Footer等。每个ORC文件首先会被横向切分成多个Stripe，而每个Stripe内部以列存储，所有的列存储在一个文件中，而且每个stripe默认的大小是250MB，相对于RCFile默认的行组大小是4MB，所以比RCFile更高效
@@ -38,7 +38,7 @@ ORC是在一定程度上扩展了RCFile，是对RCFile的优化。
 
 Hive读取数据的时候，根据FileFooter读出Stripe的信息，根据IndexData读出数据的偏移量从而读取出数据。
 网友有一幅图，形象的说明了这个问题：
-![shuffle](/assets/img/4.png)
+![shuffle](../assets/img/4.png)
 
 #### 存储空间
 ORCFile扩展了RCFile的压缩，除了Run-length（游程编码），引入了字典编码和Bit编码。
