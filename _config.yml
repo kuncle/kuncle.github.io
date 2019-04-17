@@ -7,6 +7,7 @@
 
 # Site settings
 title:            Nick
+head_title:       King's Uncle
 subtitle:         God I pray to prosper thee.
 description:      God I pray to prosper thee.
 keywords:         BigData Spark Hadoop Java Distributed
