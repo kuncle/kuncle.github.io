@@ -1,0 +1,96 @@
+---
+layout: post
+title:  "Cloudera安装"
+date:   2017-04-19 17:00:00
+categories: Cloudera
+tags: Cloudera
+---
+#### 安装介质准备：
+* 1,Cloudera Manager 安装包（rpm 包）
+``` java
+    bin文件下载地址: http://archive.cloudera.com/cm5/installer/
+    rpm包下载地址： http://archive.cloudera.com/cm5/redhat/7/x86_64/cm/  (注意自己的系统版本)
+```
+    找到对应版本,本次安装5.10.0,将整个目录下载下来,可以使用迅雷,也可以在linux中使用wget.注意目录结构要一致.
+    
+* 2,CDH 安装包（parcel 包）
+   下载地址： http://archive.cloudera.com/cdh5/parcels/
+     由于我用的是centos7.3,则需要选择e17.对应的3个文件为：
+``` java
+     CDH-5.10.0-1.cdh5.10.0.p0.41-el7.parcel
+     CDH-5.10.0-1.cdh5.10.0.p0.41-el7.parcel.sha1
+     manifest.json
+```
+
+* 3,将下载的文件上传到centos中的/var/www/html/目录下,注意目录结构和下载的路径的目录结构一致.
+    我的目录结构为
+    ``` java
+    /var/www/html/cm   
+    /var/www/html/cdh 
+    /var/www/html/cloudera-manager-installer5.10.0.bin
+    ```
+    
+#### 安装环境准备：
+* 1,修改hosts
+    vi /etc/hosts
+    添加其他机器ip与主机名映射 如192.168.1.2 master 根据自己实际情况指定 
+* 2,修改主机名
+    hostnamectl set-hostname 自己的hostname
+* 3,关闭防火墙
+``` java
+    查看状态：service firewalld status 
+    临时关闭：service firewalld stop 
+    查看防火墙启动级别：chkconfig firewalld --list 
+    永久关闭：chkconfig firewalld off
+```
+* 4,关闭selinux
+``` java
+    vi /etc/sysconfig/selinux 
+    注释掉 SELINUX=enforcing 
+    添加 SELINUX=disabled 
+    查看状态：/usr/sbin/sestatus-v 
+    注意：需要重启生效
+```
+
+* 5,免key登录
+``` java
+    生成公钥和私钥： ssh-keygen -t rsa 
+    复制公钥到免 key 主机： ssh-copy-id 指定主机地址 ip (如果有需要，自己也要和自己免 key)
+```
+
+* 6,启动httpd服务
+``` java
+    查看服务状态：service httpd status 
+    打开服务：service httpd start
+```
+
+* 7,时间同步
+``` java
+    手动设置 查看服务器时间：date 
+    设置时间：date -s "2016-01-0417:07:30" （可以单独设置日期或者时间）
+    NTP 同步(需要联网) 命令：ntpdate asia.pool.ntp.org （定时同步请看时钟同步部分）
+```
+
+* 8,安装依赖服务
+    yum -y install postgresql-server postgresql httpd perl bind-utils libxslt cyrus-sasl-gssapiredhat-lsb cyrus-sasl-plain portmap fuse fuse-libs nc python-setuptools openssl_devel python_psycopg2 mod_ssl MySQL_python
+
+#### CM安装:
+* 1,配置本地yum源
+    在/etc/yum.repos.d/目录下创建文件cloudera-manager.repo 文件内容为：
+``` shell
+    [cloudera-manager] 
+    name=ClouderaManager,Version5.10.0 
+    baseurl=http://自己机器ip/cm （都指定已经上传安装包的那一台机器即可） 
+    gpgcheck=0
+```
+* 2,验证本地yum源
+    将上一步baseurl地址粘贴到浏览器确认是否能正常访问到已经上传安装文件的机器的安装文件目录(注意开启httpd服务)
+* 3,开始安装
+``` java
+    赋予bin文件执行权限 命令：chmod u+x cloudera-manager-installer5.10.0.bin
+    执行bin文件,进入/var/www/html/目录，执行如下命令 ./cloudera-manager-installer5.10.0.bin 
+    .......一步步安装就好.安装完成进入ip:7180管理界面,用户名和密码都为admin
+  注意:请稍等几分钟在尝试进入7180界面,如果还是无法进入,请检查防火墙是否处于关闭状态.在访问时建议使用非IE浏览器,比如chrome,火狐等浏览器.
+``` 
+#### CDH安装：
+按照网页提示一步一步走就OK了.

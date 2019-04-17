@@ -1,0 +1,35 @@
+---
+layout: post
+title:  "使用log4j向Kafka直接打数据异常"
+date:   2017-03-22 11:30:00
+categories: Kafka
+tags: Kafka
+---
+#### 使用log4j向Kafka直接打数据异常
+``` java
+Exception in thread "main" java.lang.NoSuchMethodError: org.apache.log4j.spi.LoggingEvent.getTimeStamp()J
+	at kafka.producer.KafkaLog4jAppender.append(KafkaLog4jAppender.scala:72)
+	at org.apache.log4j.AppenderSkeleton.doAppend(AppenderSkeleton.java:230)
+	at org.apache.log4j.helpers.AppenderAttachableImpl.appendLoopOnAppenders(AppenderAttachableImpl.java:65)
+	at org.apache.log4j.Category.callAppenders(Category.java:203)
+	at org.apache.log4j.Category.forcedLog(Category.java:388)
+	at org.apache.log4j.Category.info(Category.java:663)
+```
+###### 问题来源
+log4j版本太低
+``` java
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.12</version>
+</dependency>
+```
+###### 解决方法
+升级log4j版本
+``` java
+<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.16</version>
+</dependency>
+```

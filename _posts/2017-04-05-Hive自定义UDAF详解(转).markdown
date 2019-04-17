@@ -1,0 +1,117 @@
+---
+layout: post
+title:  "Hive自定义UDAF详解(转)"
+date:   2017-04-05 16:35:00
+categories: Hive
+tags: Hive
+---
+转自：http://paddy-w.iteye.com/blog/2081409
+<br>遇到一个Hive需求：有A、B、C三列，按A列进行聚合，求出C列聚合后的最小值和最大值各自对应的B列值。这个需求用hql和内建函数也可完成，但是比较繁琐，会解析成几个MR进行执行，如果自定义UDAF便可只利用一个MR完成任务。
+所用Hive为0.13.1版本。UDAF有两种，第一种是比较简单的形式，利用抽象类UDAF和UDAFEvaluator，暂不做讨论。主要说一下第二种形式，利用接口GenericUDAFResolver2（或者抽象类AbstractGenericUDAFResolver）和抽象类GenericUDAFEvaluator。
+###### 这里用AbstractGenericUDAFResolver做说明.
+``` java
+public abstract class AbstractGenericUDAFResolver implements GenericUDAFResolver2 {  
+  
+  @SuppressWarnings("deprecation")  
+  @Override  
+  public GenericUDAFEvaluator getEvaluator(GenericUDAFParameterInfo info)  
+    throws SemanticException {  
+  
+    if (info.isAllColumns()) {  
+      throw new SemanticException(  
+          "The specified syntax for UDAF invocation is invalid.");  
+    }  
+  
+    return getEvaluator(info.getParameters());  
+  }  
+  
+  @Override  
+  public GenericUDAFEvaluator getEvaluator(TypeInfo[] info)   
+    throws SemanticException {  
+    throw new SemanticException(  
+          "This UDAF does not support the deprecated getEvaluator() method.");  
+  }  
+}  
+
+```
+可以看到，该抽象类有两个方法，其中一个已经被弃用，所以只需要实现参数类型为TypeInfo的getEvaluator方法即可。 
+该方法其实相当于一个工厂，TypeInfo表示在使用时传入该UDAF的参数的类型。该方法主要做的工作有：
+* 检查参数长度和类型
+* 根据参数返回对应的实际处理对象
+
+###### 返回的对象类型为GenericUDAFEvaluator，这是一个抽象类： 
+``` java
+public abstract class GenericUDAFEvaluator implements Closeable {  
+  
+    ......  
+  
+    public ObjectInspector init(Mode m, ObjectInspector[] parameters) throws HiveException {  
+        // This function should be overriden in every sub class  
+        // And the sub class should call super.init(m, parameters) to get mode set.  
+        mode = m;  
+        return null;  
+    }  
+  
+    public abstract AggregationBuffer getNewAggregationBuffer() throws HiveException;  
+  
+    public abstract void reset(AggregationBuffer agg) throws HiveException;  
+  
+    public abstract void iterate(AggregationBuffer agg, Object[] parameters) throws HiveException;  
+  
+    public abstract Object terminatePartial(AggregationBuffer agg) throws HiveException;  
+  
+    public abstract void merge(AggregationBuffer agg, Object partial) throws HiveException;  
+  
+    public abstract Object terminate(AggregationBuffer agg) throws HiveException;  
+    ......  
+}  
+```
+说明上述方法的之前，需要提一个GenericUDAFEvaluator的内部枚举类Mode 
+``` java
+public static enum Mode {  
+    /** 
+     * 相当于map阶段，调用iterate()和terminatePartial() 
+     */  
+    PARTIAL1,  
+    /** 
+     * 相当于combiner阶段，调用merge()和terminatePartial() 
+     */  
+    PARTIAL2,  
+    /** 
+     * 相当于reduce阶段调用merge()和terminate() 
+     */  
+    FINAL,  
+    /** 
+     * COMPLETE: 相当于没有reduce阶段map，调用iterate()和terminate() 
+     */  
+    COMPLETE  
+  };  
+```
+可以看到，UDAF将任务分成了几种类型，PARTIAL1相当于MR程序的map阶段，负责迭代处理记录并返回该阶段的中间结果。PARTIAL2相当于Combiner，对map阶段的结果进行一次聚合。FINAL是reduce阶段，进行整体聚合以及返回最终结果。COMPLETE有点特殊，是一个没有reduce阶段的map过程，所以在进行记录迭代之后，直接返回最终结果。 
+###### 再来看GenericUDAFEvaluator中的各方法
+``` java
+public ObjectInspector init(Mode m, ObjectInspector[] parameters) throws HiveException {...} 
+```
+初始化方法，在Mode的每一个阶段启动时会执行init方法。该方法有两个参数，第一个参数是Mode，可以根据此参数判断当前执行的是哪个阶段，进行该阶段相应的初始化工作。ObjectInspector是一个抽象的类型描述，例如：当参数类型是原生类型时，可以转化为PrimitiveObjectInspector，除此之外还有StructObjectInspector等等。ObjectInspector只是描述类型，并不存储实际数据。后面的具体例子中会有一些使用说明。 
+<br>ObjectInspector[]的长度不是固定的，要看当前是处于哪个阶段。如果是PARTIAL1，那么与使用时传入该UDAF的参数个数一致；如果是FINAL阶段，长度就是1了，因为map阶段返回的结果只有一个对象。
+``` java
+public abstract AggregationBuffer getNewAggregationBuffer() throws HiveException;  
+  
+public abstract void reset(AggregationBuffer agg) throws HiveException;
+```
+AggregationBuffer是一个标识接口，没有任何需要实现的方法。实现该接口的类被用于暂存中间结果。reset是为了重置AggregationBuffer，但是在实际应用场景中没有发现单独调用该方法进行重置，有可能是聚合key的数据量还不够大，在后面会再说一下这个问题。 
+``` java
+public abstract void iterate(AggregationBuffer agg, Object[] parameters) throws HiveException;  
+  
+public abstract Object terminatePartial(AggregationBuffer agg) throws HiveException;  
+  
+public abstract void merge(AggregationBuffer agg, Object partial) throws HiveException;  
+  
+public abstract Object terminate(AggregationBuffer agg) throws HiveException;  
+......  
+```
+iterate方法存在于MR的M阶段，用于处理每一条输入记录。Object[]作为输入传入UFAF，AggregationBuffer作为中间缓存暂存结果。需要注意的是，每次调用iterate传入的AggregationBuffer并不一定是同一个对象。Hive调用UDAF的时候会用一个Map来管理AggregationBuffer，Map的key即为需要聚合的key。就通过实际运行过程来看，在每一次iterate调用之前，会根据聚合key从Map中查找对应的AggregationBuffer，若能找到则直接返回AggregationBuffer对象，找不到则调用getNewAggregationBuffer方法新建并插入Map中并返回结果。 
+<br>terminatePartial方法在iterate处理完所有输入后调用，用于返回初步的聚合结果。 
+<br>merge方法存在于MR的R阶段（也同样存在于Combine阶段），用于最后的聚合。Object类型的partial参数与terminatePartial返回值一致，AggregationBuffer参数与上述一致。 
+<br>terminate方法在merge方法执行完毕之后调用，用于进行最后的处理，并返回最后结果。 
+<br>像上面提到的Mode一样，这些方法并不一定都会被调用，与Hive解析成的MR程序类型有关。例如解析后的MR程序只有M阶段，则只会调用iterate和terminate。实际使用过程中，由于聚合key数据量有限，内存可以承载，所以没有发现reset单独调用的情况。每次遇到一个不同的key，则新建一个AggregationBuffer，没有看源码，不知道当聚合key很大的时候，是否会调用reset进行对象重用。

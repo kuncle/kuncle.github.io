@@ -1,0 +1,40 @@
+---
+layout: post
+title:  "图数据库Titan安装"
+date:   2017-09-22 12:35:00
+categories: Titan
+tags: Titan
+---
+* 图数据库选型   
+
+重要：在Titan的原始团队被DataStar收购后,Titan停滞在1.0.0版本后不再更新。来自Linux Foundation开源社区的爱好者在Titan基础上开发了JanusGraph.https://github.com/JanusGraph/janusgraph
+
+目前市面上比较知名的图数据库主要是Neo4j和Titan.   
+这里是这两个数据库的对比：https://db-engines.com/en/system/Neo4j;Titan   
+至于为什么我选择Titan,主要是基于Titan是基于Apache v2 开源协议.而且对公司现有大数据平台的无缝结合.   
+满足常用的图操作需求，且提供Gremlin查询接口.性能良好，在超大图上的响应能够做到秒级别.
+
+* Titan安装
+``` shell
+Titan requires Java 8 (Standard Edition). Oracle Java 8 is recommended
+download url: https://github.com/thinkaurelius/titan/wiki/Downloads
+unzip titan-1.0.0-hadoop2.zip
+cd titan-1.0.0-hadoop2
+./bin/gremlin.sh
+```
+
+* 安装遇到问题
+``` shell
+Invalid import definition: 'com.thinkaurelius.titan.hadoop.MapReduceIndexManagement'; reason: startup failed:
+script15060542610722042298222.groovy: 1: unable to resolve class com.thinkaurelius.titan.hadoop.MapReduceIndexManagement
+ @ line 1, column 1.
+   import com.thinkaurelius.titan.hadoop.MapReduceIndexManagement
+   ^
+
+1 error
+```
+需要引入titan-hadoop-1.0.0.jar,地址：http://search.maven.org/remotecontent?filepath=com/thinkaurelius/titan/titan-hadoop/1.0.0/titan-hadoop-1.0.0.jar
+
+
+
+

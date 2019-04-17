@@ -1,0 +1,60 @@
+---
+layout: post
+title:  "Sqoop增量导入导出"
+date:   2017-12-05 11:00:00
+categories: Sqoop
+tags: Sqoop
+---
+## export：
+| 参数           | 说明           |
+|:-------------:|:-------------:|
+|-–direct|快速模式，利用了数据库的导入工具，如mysql的mysqlimport，可以比jdbc连接的方式更为高效的将数据导入到关系数据库中|
+|–-export-dir <dir>|存放数据的HDFS的源目录|
+|--m,–num-mappers <n>|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的最大Map数|
+|–-table <table-name>|要导入到的关系数据库表|
+|–-update-key <col-name>|后面接条件列名，通过该参数，可以将关系数据库中已经存在的数据进行更新操作，类似于关系数据库中的update操作|
+|–-update-mode <mode>|更新模式，有两个值updateonly和默认的allowinsert，该参数只能是在关系数据表里不存在要导入的记录时才能使用，比如要导入的hdfs中有一条id=1的记录，如果在表里已经有一条记录id=2，那么更新会失败|
+|–-input-null-string <null-string>|可选参数，如果没有指定，则字符串null将被使用|
+|-–input-null-non-string <null-string>|可选参数，如果没有指定，则字符串null将被使用|
+|-–staging-table <staging-table-name>|该参数是用来保证在数据导入关系数据库表的过程中事务安全性的，因为在导入的过程中可能会有多个事务，那么一个事务失败会影响到其它事务，比如导入的数据会出现错误或出现重复的记录等等情况，那么通过该参数可以避免这种情况。创建一个与导入目标表同样的数据结构，保留该表为空在运行数据导入前，所有事务会将结果先存放在该表中，然后最后由该表通过一次事务将结果写入到目标表中|
+|-–clear-staging-table|如果该staging-table非空，则通过该参数可以在运行导入前清除staging-table里的数据|
+|-–batch|该模式用于执行基本语句|
+
+## increment export
+| 参数           | 	说明        |
+|:-------------:|:-------------:|
+|--update-key|后面接条件列名，通过该参数，可以将关系数据库中已经存在的数据进行更新操作,类似于关系数据库中的update操作,有两种模式：updateonly（默认）、allowinsert(存在的数据更新，不存在数据插入)|
+|--update-mode|更新模式，有两个值updateonly和默认的allowinsert， 该参数只能是在关系数据表里不存在要导入的记录时才能使用， 比如要导入的hdfs中有一条id=1的记录，如果在表里已经有一条记录id=2，那么更新会失败|
+
+
+## import
+| 参数           | 	说明        |
+|:-------------:|:-------------:|
+|--append|将数据追加到hdfs中已经存在的dataset中。使用该参数，sqoop将把数据先导入到一个临时目录中，然后重新给文件命名到一个正式的目录中，以避免和该目录中已存在的文件重名|
+|–-as-avrodatafile|将数据导入到一个Avro数据文件中|
+|–-as-sequencefile|将数据导入到一个sequence文件中|
+|–-as-textfile|将数据导入到一个普通文本文件中，生成该文本文件后，可以在hive中通过sql语句查询出结果|
+|–-columns<col,col,col…>|指定要导入的字段值，格式如：–columns id,username|
+|–-direct|直接导入模式，使用的是关系数据库自带的导入导出工具。官网上是说这样导入会更快|
+|–-direct-split-size|在使用上面direct直接导入的基础上，对导入的流按字节数分块，特别是使用直连模式从PostgreSQL导入数据的时候，可以将一个到达设定大小的文件分为几个独立的文件|
+|–-inline-lob-limit|设定大对象数据类型的最大值|
+|--m,–num-mappers|启动N个map来并行导入数据，默认是4个，最好不要将数字设置为高于集群的节点数|
+|–-query,-e<statement>|从查询结果中导入数据，该参数使用时必须指定–target-dir、–hive-table，在查询语句中一定要有where条件且在where条件中需要包含$CONDITIONS，示例：–query ‘select * from person where $CONDITIONS ‘|
+|–-boundary-query <statement>|边界查询，也就是在导入前先通过SQL查询得到一个结果集，然后导入的数据就是该结果集内的数据，格式如"–boundary-query 'select id,creationdate from person where id = 3'，表示导入的数据为id=3的记录，或者"select min(<split-by>), max(<split-by>) from table-name"，注意查询的字段中不能有数据类型为字符串的字段，否则会报错'java.sql.SQLException: Invalid value for getLong()'"|
+|--split-by<column-name>|表的列名，用来切分工作单元，一般后面跟主键ID|
+|--table <table-name>|关系数据库表名，数据从该表中获取|
+|--target-dir <dir>|指定hdfs路径|
+|--warehouse-dir <dir>|与–target-dir不能同时使用，指定数据导入的存放目录，适用于hdfs导入，不适合导入hive目录|
+|--where|从关系数据库导入数据时的查询条件，示例：–where ‘id = 2′|
+|-z,--compress|压缩参数，默认情况下数据是没被压缩的，通过该参数可以使用gzip压缩算法对数据进行压缩，适用于SequenceFile, text文本文件, 和Avro文件|
+|--compression-codec|Hadoop压缩编码，默认是gzip|
+|--null-string <null-string>|可选参数，如果没有指定，则字符串null将被使用|
+|--null-non-string<null-string>|可选参数，如果没有指定，则字符串null将被使用|
+
+## increment import
+|参数|说明|
+|:-------------:|:-------------:|
+|-–check-column (col)|用来作为判断的列名，如id|
+|-–incremental (mode)|append：追加，比如对大于last-value指定的值之后的记录进行追加导入。lastmodified：最后的修改时间，追加last-value指定的日期之后的记录,使用lastmodified模式进行增量处理要指定增量数据是以append模式(附加)还是merge-key(合并)模式添加 |
+|–-last-value (value)|指定自从上次导入后列的最大值（大于该指定的值），也可以自己设定某一值,对incremental参数，如果是以日期作为追加导入的依据，则使用lastmodified，否则就使用append值。|
+|--merge-key (column)|对修改的数据会根据column键来进行合并，更新修改|

@@ -1,0 +1,164 @@
+---
+layout: post
+title:  "Cloudera安装遇到的问题和解决方案"
+date:   2017-04-19 17:00:00
+categories: Cloudera
+tags: Cloudera
+---
+* Unable to retrieve non-local non-loopback IP address. Seeing address: cm/127.0.0.1
+``` shell
+2017-04-18 09:40:29,308 ERROR ScmActive-0:com.cloudera.server.cmf.components.ScmActive: ScmActive: Unable to retrieve non-local non-loopback IP address. Seeing address: cm/127.0.0.1. 2017-04-18 09:40:29,308 ERROR ScmActive-0:com.cloudera.server.cmf.components.ScmActive: ScmActive failed. Bootup = false2017-04-18 09:40:29,308 ERROR ScmActive-0:com.cloudera.server.cmf.components.ScmActive: ScmActive was not able to access CM identity to validate it.2017-04-18 09:40:29,308 ERROR ScmActive-0:com.cloudera.server.cmf.components.ScmActive: ScmActive is deferring the validation to the next run in 15 seconds.2017-04-18 09:40:29,308 WARN ScmActive-0:com.cloudera.enterprise.AbstractWrappedEntityManager: Rolling back transaction that wasn't marked for rollback-only.java.lang.Exception: Non-thrown exception for stack trace.        
+at com.cloudera.enterprise.AbstractWrappedEntityManager.close(AbstractWrappedEntityManager.java:161)        
+at com.cloudera.cmf.persist.CmfEntityManager.close(CmfEntityManager.java:356)        
+at com.cloudera.server.cmf.components.ScmActive.markScmActive(ScmActive.java:224)        
+at com.cloudera.server.cmf.components.ScmActive.run(ScmActive.java:87)        
+at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:471)        
+at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:304)        
+at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:178)        
+at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:293)        
+at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)        
+at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)        
+at java.lang.Thread.run(Thread.java:745)
+```
+解决方案：
+是由于host文件导致，我的host文件多了一行127.0.0.1   cm,删除这行就OK了
+
+* Unable to create new directory at /var/lib/cloudera-host-monitor/ts/ts_entity_metadata
+``` shell
+2017-04-19 09:44:37,403 INFO com.cloudera.cmon.tstore.leveldb.LDBUtils: Creating directory /var/lib/cloudera-host-monitor/ts/ts_entity_metadata
+2017-04-19 09:44:37,404 ERROR com.cloudera.cmon.firehose.Main: Error creating LevelDB timeseries store in directory /var/lib/cloudera-host-monitor/ts
+java.io.IOException: Unable to create new directory at /var/lib/cloudera-host-monitor/ts/ts_entity_metadata
+        at com.cloudera.cmon.tstore.leveldb.LDBUtils.openVersionedDB(LDBUtils.java:239)
+        at com.cloudera.cmon.tstore.leveldb.LDBTimeSeriesMetadataStore.openMetadataDB(LDBTimeSeriesMetadataStore.java:148)
+        at com.cloudera.cmon.tstore.leveldb.LDBTimeSeriesMetadataStore.<init>(LDBTimeSeriesMetadataStore.java:138)
+        at com.cloudera.cmon.firehose.Main.main(Main.java:452)
+```
+解决方案：
+是由于文件夹权限导致，修改文件夹拥有人chown cloudera-scm：cloudera-scm /var/lib/cloudera-host-monitor和/var/lib/cloudera-service-monitor
+
+* ValueError: too many values to unpack
+出现这个问题会导致parcel一直处于分发阶段
+``` shell
+[19/Apr/2017 14:23:20 +0000] 25170 MainThread agent        INFO     Using parcels directory from server provided value: /opt/cloudera/parcels
+[19/Apr/2017 14:23:20 +0000] 25170 MainThread parcel       INFO     Agent does create users/groups and apply file permissions
+[19/Apr/2017 14:23:20 +0000] 25170 MainThread parcel_cache INFO     Using /opt/cloudera/parcel-cache for parcel cache
+[19/Apr/2017 14:23:20 +0000] 25170 MainThread agent        ERROR    Caught unexpected exception in main loop.
+Traceback (most recent call last):
+  File "/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/agent.py", line 710, in __issue_heartbeat
+    self._init_after_first_heartbeat_response(resp_data)
+  File "/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/agent.py", line 947, in _init_after_first_heartbeat_response
+    self.client_configs.load()
+  File "/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/client_configs.py", line 682, in load
+    new_deployed.update(self._lookup_alternatives(fname))
+  File "/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/client_configs.py", line 432, in _lookup_alternatives
+    return self._parse_alternatives(alt_name, out)
+  File "/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/client_configs.py", line 444, in _parse_alternatives
+    path, _, _, priority_str = line.rstrip().split(" ")
+ValueError: too many values to unpack
+```
+解决方案：
+修改/usr/lib64/cmf/agent/build/env/lib/python2.7/site-packages/cmf-5.10.0-py2.7.egg/cmf/client_configs.py脚本的第444行代码.
+修改为：
+``` java
+for line in output.splitlines():
+      if line.startswith("/"):
+        if len(line.rstrip().split(" "))<=4:
+          path, _, _, priority_str = line.rstrip().split(" ")
+
+          # Ignore the alternative if it's not managed by CM.
+          if CM_MAGIC_PREFIX not in os.path.basename(path):
+            continue
+
+          try:
+            priority = int(priority_str)
+          except ValueError:
+            THROTTLED_LOG.info("Failed to parse %s: %s", name, line)
+
+          key = ClientConfigKey(name, path)
+          value = ClientConfigValue(priority, self._read_generation(path))
+          ret[key] = value
+
+        else:
+          pass
+    return ret
+```
+具体可以参考：http://blog.csdn.net/qq_23660243/article/details/60870527   感谢这位同学的解决方案.
+
+* Error, CM server guid updated
+``` shell
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread agent        INFO     Using parcels directory from server provided value: /opt/cloudera/parcels
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread agent        INFO     Using parcels directory from server provided value: /opt/cloudera/parcels
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread agent        WARNING  Expected user root for /opt/cloudera/parcels but was cloudera-scm
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread agent        WARNING  Expected group root for /opt/cloudera/parcels but was cloudera-scm
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread parcel       INFO     Agent does create users/groups and apply file permissions
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread parcel_cache INFO     Using /opt/cloudera/parcel-cache for parcel cache
+[19/Apr/2017 14:43:41 +0000] 3700 MainThread agent        ERROR    Error, CM server guid updated, expected 0fd6eac4-d1dc-4b46-90bb-b58c87fa3d1f, received c9bb909f-e7c0-4d56-b33e-26e3764adae8
+```
+解决方案：
+rm -f /var/lib/cloudera-scm-agent/cm_guid 然后 service cloudera-scm-agent restart
+
+* Failed request to SCM: 302
+``` shell
+2017-04-19 15:01:36,610 INFO com.cloudera.cmf.BasicScmProxy: Failed request to SCM: 302
+2017-04-19 15:01:37,610 INFO com.cloudera.cmf.BasicScmProxy: Authentication to SCM required.
+2017-04-19 15:01:37,650 INFO com.cloudera.cmf.BasicScmProxy: Using encrypted credentials for SCM
+2017-04-19 15:01:37,653 INFO com.cloudera.cmf.BasicScmProxy: Authenticated to SCM.
+```
+解决方案：
+官方回复是
+``` shell
+The "Failed request to SCM: 302" message occurs when the Host Monitor attempts to communicate to Cloudera Manager but the session has expired.  The Host Monitor acts as a client that authenticates to SCM, so it is subject to session restrictions.
+The error can be ignored as the Host Monitor will re-authenticate and we do see that in your case that occurs.
+In fact, a code change to make the message an INFO message rather than ERROR is slated for Cloudera Manager 5.7.2 and 5.8.2.
+```
+没啥大的影响，但我用的是5.10.0  ......
+
+* Unable to find the JDBC database jar on host 
+这个属于安装oozie和hive时用mysql作为元数据库时遇到的
+解决方案：将mysql的连接驱动放到 /usr/share/java/mysql-connector-java.jar
+
+* 安装Kafka时java.lang.OutOfMemoryError: Java heap space
+``` shell
+# java.lang.OutOfMemoryError: Java heap space
+# -XX:OnOutOfMemoryError="/usr/lib64/cmf/service/common/killparent.sh"
+#   Executing /bin/sh -c "/usr/lib64/cmf/service/common/killparent.sh"...
+Wed Apr 19 16:15:33 CST 2017
+JAVA_HOME=/usr/java/jdk1.7.0_67-cloudera
+Using -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/kafka_kafka-KAFKA_BROKER-c07d94c57862124dad7ce85095d99c9f_pid22663.hprof -XX:OnOutOfMemoryError=/usr/lib64/cmf/service/common/killparent.sh as CSD_JAVA_OPTS
+Using /run/cloudera-scm-agent/process/114-kafka-KAFKA_BROKER as conf dir
+Using scripts/control.sh as process script
+CONF_DIR=/run/cloudera-scm-agent/process/114-kafka-KAFKA_BROKER
+CMF_CONF_DIR=/etc/cloudera-scm-agent
+```
+解决方案： 修改Kafka的Java Heap Size of Broker 设置为broker_max_heap_size=256
+
+* "org.apache.log4j.RollingFileAppender" object is not assignable to a "org.apache.log4j.Appender" variable
+这个是安装sqoop2时遇到的问题
+``` shell
+Thu Apr 20 10:29:05 CST 2017
+JAVA_HOME=/usr/java/jdk1.7.0_67-cloudera
+using 5 as CDH_VERSION
+CONF_DIR=/run/cloudera-scm-agent/process/238-sqoop-SQOOP_SERVER
+CMF_CONF_DIR=/etc/cloudera-scm-agent
+log4j:ERROR A "org.apache.log4j.RollingFileAppender" object is not assignable to a "org.apache.log4j.Appender" variable.
+log4j:ERROR The class "org.apache.log4j.Appender" was loaded by 
+log4j:ERROR [org.apache.catalina.loader.StandardClassLoader@52437b9a] whereas object of type 
+log4j:ERROR "org.apache.log4j.RollingFileAppender" was loaded by [WebappClassLoader
+  context: /sqoop
+  delegate: false
+  repositories:
+    /WEB-INF/classes/
+----------> Parent Classloader:
+org.apache.catalina.loader.StandardClassLoader@52437b9a
+].
+log4j:ERROR Could not instantiate appender named "RFA".
+log4j:WARN No appenders could be found for logger (org.apache.hadoop.util.NativeCodeLoader).
+log4j:WARN Please initialize the log4j system properly.
+log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+```
+解决方案：
+``` shell
+cd /opt/cloudera/parcels/CDH-5.10.0-1.cdh5.10.0.p0.41/lib/sqoop2/webapps/sqoop/WEB-INF/lib
+mv log4j-1.2.16.jar log4j-1.2.16.jar.bak
+刚开始我修改的/var/lib/sqoop2/tomcat-deployment/webapps/sqoop 目录下的pom文件和jar包，发现每次重启sqoop2，这个目录下的文件都会被覆盖，后来，通过 find / -name sqoop.war命令查找到/opt/cloudera/parcels/CDH-5.10.0-1.cdh5.10.0.p0.41/lib/sqoop2/ 这个目录下也存在，测试修改了下这个目录下的文件，生效了
+```

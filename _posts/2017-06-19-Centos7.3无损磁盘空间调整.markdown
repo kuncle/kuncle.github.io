@@ -1,0 +1,125 @@
+---
+layout: post
+title:  "Centos7.3无损磁盘空间调整"
+date:   2017-06-19 11:00:00
+categories: Linux
+tags: Linux
+---
+#### Centos7.3无损磁盘空间调整
+* 查看磁盘空间
+``` shell
+[root@slave1 ~]# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/cl-root   50G   28G   23G  55% /
+devtmpfs             6.8G     0  6.8G   0% /dev
+tmpfs                6.7G   84K  6.7G   1% /dev/shm
+tmpfs                6.7G   41M  6.7G   1% /run
+tmpfs                6.7G     0  6.7G   0% /sys/fs/cgroup
+/dev/xvda1          1014M  173M  842M  17% /boot
+/dev/mapper/cl-home  343G   72M  343G   1% /home
+tmpfs                1.4G     0  1.4G   0% /run/user/0
+tmpfs                1.4G   16K  1.4G   1% /run/user/42
+cm_processes         6.7G  251M  6.5G   4% /run/cloudera-scm-agent/process
+tmpfs                1.4G     0  1.4G   0% /run/user/1000
+```
+* 备份数据
+``` shell
+[root@slave1 ~]# tar zcvf /tmp/home.tar /home
+```
+* 取消挂载
+``` shell
+[root@slave1 ~]# umount /home
+umount: /home: target is busy.
+        (In some cases useful info about processes that use
+         the device is found by lsof(8) or fuser(1))
+You have new mail in /var/spool/mail/root
+```
+* 查看磁盘占用(因为占用,无法取消挂载)
+``` shell
+[root@slave1 ~]# fuser -m -v /home
+                     USER        PID ACCESS COMMAND
+/home:               root     kernel mount /home
+                     cm        23054 ..c.. sftp-server
+                     cm        23071 ..c.. bash
+```
+* 解除磁盘占用
+``` shell
+[root@slave1 ~]# fuser -m -v -i -k /home
+                     USER        PID ACCESS COMMAND
+/home:               root     kernel mount /home
+                     cm        23054 ..c.. sftp-server
+                     cm        23071 ..c.. bash
+Kill process 23054 ? (y/N) y
+Kill process 23071 ? (y/N) y
+```
+* 取消挂载
+``` shell
+[root@slave1 ~]# umount /home
+```
+* 删除/home所在的lv
+``` shell
+[root@slave1 ~]# lvremove /dev/mapper/cl-home
+Do you really want to remove active logical volume cl/home? [y/n]: y
+  Logical volume "home" successfully removed
+```
+* 扩展/root所在的lv，增加290G
+``` shell
+[root@slave1 ~]# lvextend -L +290G /dev/mapper/cl-root
+  Size of logical volume cl/root changed from 50.00 GiB (12800 extents) to 340.00 GiB (87040 extents).
+  Logical volume cl/root successfully resized.
+```
+* 扩展/root文件系统
+``` shell
+[root@slave1 ~]# xfs_growfs /dev/mapper/cl-root
+meta-data=/dev/mapper/cl-root    isize=512    agcount=4, agsize=3276800 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0 spinodes=0
+data     =                       bsize=4096   blocks=13107200, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal               bsize=4096   blocks=6400, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 13107200 to 89128960
+```
+* 重新创建home lv (50G)
+``` shell
+[root@slave1 ~]# lvcreate -L 50G -n home cl
+  Logical volume "home" created.
+```
+* 创建文件系统
+``` shell
+[root@slave1 ~]# mkfs.xfs /dev/cl/home
+meta-data=/dev/cl/home           isize=512    agcount=4, agsize=3276800 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=13107200, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=6400, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+```
+* 挂载/home
+``` shell
+[root@slave1 ~]# mount /dev/cl/home /home
+```
+* 查看磁盘空间
+``` shell
+[root@slave1 ~]# df -h
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/cl-root  340G   28G  313G   8% /
+devtmpfs             6.8G     0  6.8G   0% /dev
+tmpfs                6.7G   84K  6.7G   1% /dev/shm
+tmpfs                6.7G   41M  6.7G   1% /run
+tmpfs                6.7G     0  6.7G   0% /sys/fs/cgroup
+/dev/xvda1          1014M  173M  842M  17% /boot
+tmpfs                1.4G     0  1.4G   0% /run/user/0
+tmpfs                1.4G   16K  1.4G   1% /run/user/42
+cm_processes         6.7G  251M  6.5G   4% /run/cloudera-scm-agent/process
+/dev/mapper/cl-home   50G   33M   50G   1% /home
+```
+* 恢复文件
+``` shell
+[root@slave1 ~]# tar zxvf /tmp/home.tar -C /
+```

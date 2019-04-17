@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "java类型擦除"
+date:   2018-06-14 4:25:00
+categories: JVM
+tags: JVM
+---
+#### 概念
+Java中的泛型基本上都是在编译器这个层次来实现的。在生成的Java字节码中是不包含泛型中的类型信息的。使用泛型的时候加上的类型参数，会在编译器在编译的时候去掉。这个过程就称为类型擦除。
+
+在代码中定义的List<object>和List<String>等类型，在编译后都会编程List。JVM看到的只是List，而由泛型附加的类型信息对JVM来说是不可见的。
+``` java
+ArrayList<String> arrayList1 = new ArrayList<String>();  
+ArrayList<Integer> arrayList2 = new ArrayList<Integer>();  
+System.out.println(arrayList1.getClass()==arrayList2.getClass());  
+```
+结果为true。说明泛型类型String和Integer都被擦除掉了，只剩下了原始类型。
+
+#### 类型擦除后保留的原始类型
+原始类型（raw type）就是擦除去了泛型信息，最后在字节码中的类型变量的真正类型。无论何时定义一个泛型类型，相应的原始类型都会被自动地提供。类型变量被擦除（crased），并使用其限定类型（无限定的变量用Object）替换。
+
+#### 类型擦除引起的问题及解决方法

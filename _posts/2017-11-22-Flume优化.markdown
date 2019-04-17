@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "Flume优化"
+date:   2017-11-22 14:50:00
+categories: Flume
+tags: Flume
+---
+* 基础参数调优经验    
+HdfsSink中默认的serializer会每写一行在行尾添加一个换行符，我们日志本身带有换行符，这样会导致每条日志后面多一个空行，修改配置不要自动添加换行符；    
+lc.sinks.sink_hdfs.serializer.appendNewline = false    
+调大MemoryChannel的capacity，尽量利用MemoryChannel快速的处理能力；    
+调大HdfsSink的batchSize，增加吞吐量，减少hdfs的flush次数；    
+适当调大HdfsSink的callTimeout，避免不必要的超时错误；
+
+* HdfsSink获取Filename的优化    
+HdfsSink的path参数指明了日志被写到Hdfs的位置，该参数中可以引用格式化的参数，将日志写到一个动态的目录中。这方便了日志的管理。例如我们可以将日志写到category分类的目录，并且按天和按小时存放：    
+lc.sinks.sink_hdfs.hdfs.path = /user/hive/work/orglog.db/%{category}/dt=%Y%m%d/hour=%H    
+HdfsS ink中处理每条event时，都要根据配置获取此event应该写入的Hdfs path和filename，默认的获取方法是通过正则表达式替换配置中的变量，获取真实的path和filename。因为此过程是每条event都要做的操作，耗时很长。通过我们的测试，20万条日志，这个操作要耗时6-8s左右。    
+由于我们目前的path和filename有固定的模式，可以通过字符串拼接获得。而后者比正则匹配快几十倍。拼接定符串的方式，20万条日志的操作只需要几百毫秒。
+
+* HdfsSink的b/m/s优化    
+在我们初始的设计中，所有的日志都通过一个Channel和一个HdfsSink写到Hdfs上。我们来看一看这样做有什么问题。   
+首先，我们来看一下HdfsSink在发送数据的逻辑：
+``` shell
+//从Channel中取batchSize大小的events
+for (txnEventCount = 0; txnEventCount < batchSize; txnEventCount++) {
+    //对每条日志根据category append到相应的bucketWriter上；
+    bucketWriter.append(event);
+｝
+for (BucketWriter bucketWriter : writers) {
+    //然后对每一个bucketWriter调用相应的flush方法将数据flush到Hdfs上
+    bucketWriter.flush();
+｝
+```
+假设我们的系统中有100个category，batchSize大小设置为20万。则每20万条数据，就需要对100个文件进行append或者flush操作。    
+其次，对于我们的日志来说，基本符合80/20原则。即20%的category产生了系统80%的日志量。这样对大部分日志来说，每20万条可能只包含几条日志，也需要往Hdfs上flush一次。     
+上述的情况会导致HdfsSink写Hdfs的效率极差。    
+鉴于这种实际应用场景，我们把日志进行了大小归类，分为big, middle和small三类，这样可以有效的避免小日志跟着大日志一起频繁的flush，提升效果明显。
