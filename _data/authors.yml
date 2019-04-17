@@ -2,11 +2,11 @@ default:                                                      # Fallback if noth
   initial:      Kuncle                                       # used for author lookup in posts and for first two characters in the about page back button
   name:         "King's Uncle"                               # used to display author name
   cover:        /assets/mountain-alternative-cover.jpg        # OPTIONAL: defines location of cover image in about page
-  picture:      /assets/johndoe.jpg                           # OPTIONAL: author picture
+  picture:      /assets/kuncle.jpg                           # OPTIONAL: author picture
   bio:          This is my bio!                               # OPTIONAL: text below author name in posts
   location:     China                                       # OPTIONAL: used to display location of the author
   website:                          						  # OPTIONAL: link to the author of a post
-  email:                                                      # OPTIONAL: used in the about page
+  email:        csdwz0220@gmail.com                                              # OPTIONAL: used in the about page
   twitter:                                                    # OPTIONAL: used in the about page
   linkedin:                                                   # OPTIONAL: used in the about page
   xing:                                                       # OPTIONAL: used in the about page
@@ -27,7 +27,7 @@ kuncle:
   initial:      Kuncle
   name:         "King's Uncle"
   cover:        /assets/mountain-alternative-cover.jpg  
-  picture:      /assets/johndoe.jpg  
+  picture:      /assets/kuncle.jpg
   bio:          This is my bio!
   location:     China
   email:        "-"   

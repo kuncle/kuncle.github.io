@@ -12,14 +12,6 @@ kuncle:
           location:         "Zhejiang University"
           description:      "Computer Science and Technology"
     employment:
-        - time:             "06.2018 - now"
-          location:         "Shanghai"
-          company:          "Citigroup - CSTC"
-          position:         "Senior BigData Developer"
-          responsibilities:
-            - "Research new technology"
-            - "Real-time data processing"
-            - "Data solution"
         - time:             "03.2017 - 05.2018"
           location:         "Chengdu"
           company:          "Manulife"
