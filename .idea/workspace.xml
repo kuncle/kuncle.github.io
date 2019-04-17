@@ -2,10 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aff83654-c532-417c-86a4-ab8c40c8c2c3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/assets/fluidicon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/_config.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_includes/head.html" beforeDir="false" afterPath="$PROJECT_DIR$/_includes/head.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_posts/2017-07-17-zeppelin安装并集成spark2.x.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/_posts/2017-07-17-zeppelin安装并集成spark2.x.markdown" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/2016-06-08-Readme-about-preview.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/2016-06-08-Readme-content-preview.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/2016-06-08-Readme-front-page-previewe.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/2016-06-08-Readme-post-preview.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/3.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/4.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/RoadToDataScientist.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/RoadToDataScientist.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/buffer.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/buffer.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/buffer_index.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/buffer_index.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/hive_on_spark.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/hive_on_spark.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/map_shuffle.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/map_shuffle.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/reduce_shuffle.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/reduce_shuffle.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/rmf.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/rmf.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/shuffle.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/shuffle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/spill.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/spill.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/spill_merge.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/spill_merge.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/standalone cluster1.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/standalone cluster1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/img/standalone cluster2.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/img/standalone cluster2.png" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,67 +34,54 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="_config.yml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_config.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="10" selection-start-line="9" selection-end-line="9" selection-end-column="10" />
-            </state>
-          </provider>
+      <file leaf-file-name="reduce_shuffle.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/reduce_shuffle.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="head.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/_includes/head.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="32" column="7" lean-forward="true" selection-start-line="32" selection-start-column="7" selection-end-line="32" selection-end-column="7" />
-            </state>
-          </provider>
+      <file leaf-file-name="rmf.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/rmf.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="header.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_includes/header.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="46" lean-forward="true" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
-            </state>
-          </provider>
+      <file leaf-file-name="RoadToDataScientist.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/RoadToDataScientist.png">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="authors.yml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_data/authors.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="19" lean-forward="true" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
-            </state>
-          </provider>
+      <file leaf-file-name="shuffle.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/shuffle.png">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="footer.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_includes/footer.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="152" lean-forward="true" selection-start-line="3" selection-start-column="146" selection-end-line="3" selection-end-column="152" />
-            </state>
-          </provider>
+      <file leaf-file-name="spill.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/spill.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="cv.yml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_data/cv.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="44" lean-forward="true" selection-start-line="15" selection-start-column="44" selection-end-line="15" selection-end-column="44" />
-            </state>
-          </provider>
+      <file leaf-file-name="spill_merge.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/spill_merge.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
-      <file leaf-file-name="cv.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_pages/cv.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="615">
-              <caret line="41" column="16" lean-forward="true" selection-start-line="41" selection-start-column="16" selection-end-line="41" selection-end-column="16" />
-            </state>
-          </provider>
+      <file leaf-file-name="standalone cluster1.png" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/assets/img/standalone cluster1.png">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file leaf-file-name="mountain1.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/media/img/mountain1.jpg">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file leaf-file-name="mountain2.jpg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/media/img/mountain2.jpg">
+          <provider selected="true" editor-type-id="images" />
+        </entry>
+      </file>
+      <file leaf-file-name="mountain3.jpg" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/media/img/mountain3.jpg">
+          <provider selected="true" editor-type-id="images" />
         </entry>
       </file>
     </leaf>
@@ -89,6 +94,7 @@
       <find>jwillmer</find>
       <find>jek</find>
       <find>Decent</find>
+      <find>.jpg</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -114,6 +120,8 @@
         <option value="$PROJECT_DIR$/_data/cv.yml" />
         <option value="$PROJECT_DIR$/_config.yml" />
         <option value="$PROJECT_DIR$/_includes/head.html" />
+        <option value="$PROJECT_DIR$/_posts/2017-07-17-zeppelin安装并集成spark2.x.markdown" />
+        <option value="$PROJECT_DIR$/_posts/2017-03-17-MapReduce的Shuffle.markdown" />
       </list>
     </option>
   </component>
@@ -127,8 +135,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1233" />
-    <option name="y" value="339" />
+    <option name="x" value="441" />
+    <option name="y" value="254" />
     <option name="width" value="1777" />
     <option name="height" value="1112" />
   </component>
@@ -154,12 +162,23 @@
             <path>
               <item name="kuncle.github.io-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="kuncle.github.io-master" type="462c0819:PsiDirectoryNode" />
-              <item name="_includes" type="462c0819:PsiDirectoryNode" />
+              <item name="_posts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="kuncle.github.io-master" type="b2602c69:ProjectViewProjectNode" />
               <item name="kuncle.github.io-master" type="462c0819:PsiDirectoryNode" />
               <item name="assets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="kuncle.github.io-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="kuncle.github.io-master" type="462c0819:PsiDirectoryNode" />
+              <item name="media" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="kuncle.github.io-master" type="b2602c69:ProjectViewProjectNode" />
+              <item name="kuncle.github.io-master" type="462c0819:PsiDirectoryNode" />
+              <item name="media" type="462c0819:PsiDirectoryNode" />
+              <item name="img" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -181,6 +200,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/img" />
       <recent name="$PROJECT_DIR$/assets" />
       <recent name="$PROJECT_DIR$/css" />
       <recent name="$PROJECT_DIR$/media/img" />
@@ -258,7 +278,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1555503258438</updated>
-      <workItem from="1555503261757" duration="5145000" />
+      <workItem from="1555503261757" duration="5983000" />
     </task>
     <task id="LOCAL-00001" summary="update css">
       <created>1555508476475</created>
@@ -281,17 +301,31 @@
       <option name="project" value="LOCAL" />
       <updated>1555509214120</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update img">
+      <created>1555510639246</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1555510639246</updated>
+    </task>
+    <task id="LOCAL-00005" summary="update img">
+      <created>1555510789669</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1555510789669</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5145000" />
+    <option name="totallyTimeSpent" value="5983000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1233" y="339" width="1777" height="1112" extended-state="0" />
-    <editor active="true" />
+    <frame x="441" y="254" width="1777" height="1112" extended-state="0" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" />
       <window_info anchor="right" id="Palette&#9;" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" />
@@ -322,7 +356,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="update css" />
-    <option name="LAST_COMMIT_MESSAGE" value="update css" />
+    <MESSAGE value="update img" />
+    <option name="LAST_COMMIT_MESSAGE" value="update img" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/_layouts/default.html">
@@ -411,10 +446,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/assets/fluidicon.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/_includes/header.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="18" column="46" lean-forward="true" selection-start-line="18" selection-start-column="46" selection-end-line="18" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_includes/head.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="15" lean-forward="true" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
         </state>
       </provider>
     </entry>
@@ -425,15 +470,102 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/assets/fluidicon.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_includes/head.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="32" column="7" lean-forward="true" selection-start-line="32" selection-start-column="7" selection-end-line="32" selection-end-column="7" />
+    <entry file="file://$PROJECT_DIR$/_posts/2017-03-17-MapReduce的Shuffle.markdown">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="270">
+            <caret line="18" column="37" selection-start-line="18" selection-start-column="37" selection-end-line="18" selection-end-column="37" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_posts/2017-12-05-Sqoop导入导出.markdown">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor />
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_posts/2017-07-17-zeppelin安装并集成spark2.x.markdown">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="480">
+            <caret line="32" column="9" lean-forward="true" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/1.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/2.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/3.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/4.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/2016-06-08-Readme-about-preview.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/2016-06-08-Readme-content-preview.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/2016-06-08-Readme-front-page-previewe.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/avatar.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/buffer.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/buffer_index.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/hive_on_spark.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/map_shuffle.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/qrcode.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/reduce_shuffle.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/rmf.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/RoadToDataScientist.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/shuffle.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/spill.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/spill_merge.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/assets/img/standalone cluster1.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/mountain1.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/mountain2.jpg">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/media/img/mountain3.jpg">
+      <provider selected="true" editor-type-id="images" />
     </entry>
   </component>
   <component name="masterDetails">

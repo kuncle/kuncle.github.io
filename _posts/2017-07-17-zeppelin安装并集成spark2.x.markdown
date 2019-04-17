@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "zeppelin安装并集成spark2.x"
+title:  "Zeppelin安装并集成spark2.x"
 date:   2017-07-17 11:00:00
 categories: Zeppelin
 tags: Zeppelin
 ---
-* 下载zeppelin:zeppelin.apache.org下载 zeppelin-0.7.2-bin-all.tgz（本次使用的是0.7.2）
+* 下载Zeppelin:zeppelin.apache.org下载 zeppelin-0.7.2-bin-all.tgz（本次使用的是0.7.2）
 * 解压 tar zxvf zeppelin-0.7.2-bin-all.tgz
 * 修改配置文件 
 ``` shell
@@ -25,6 +25,7 @@ export ZEPPELIN_CLASSPATH="${SPARK_CLASSPATH}"
   <value>7080</value>
   <description>Server port.</description>
 </property>
+
 ```
 * 启动 ./bin/zeppelin-daemon.sh start
 
