@@ -23,22 +23,13 @@ default:                                                      # Fallback if noth
   twitch:                                                     # OPTIONAL: used in the about page
   s500px:                                                     # OPTIONAL: used in the about page
   reddit:                                                     # OPTIONAL: used in the about page
-jdecent:
-  initial:      jdecent
-  name:         "Jekyll Decent"       
+nick:
+  initial:      nick
+  name:         "Nick Liu"       
   cover:        /assets/mountain-alternative-cover.jpg  
-  picture:      /assets/johndoe.jpg  
+  picture:      /assets/author.jpg  
   bio:          This is my bio!
-  location:     Germany
+  location:     China
   email:        "-"   
   twitter:      "-"    
   twitch:       "-"
-jwillmer:
-  initial:      jwillmer
-  name:         "Jens Willmer"        
-  picture:      /assets/jwillmer.jpg  
-  bio:          All about technology 
-  location:     Germany 
-  website:      "http://jwillmer.de/cv" 
-  twitter:      jenswillmer
-  github:       jwillmer
