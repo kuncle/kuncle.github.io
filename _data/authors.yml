@@ -3,7 +3,7 @@ default:                                                      # Fallback if noth
   name:         "King's Uncle"                               # used to display author name
   cover:        /assets/mountain-alternative-cover.jpg        # OPTIONAL: defines location of cover image in about page
   picture:      /assets/kuncle.jpg                           # OPTIONAL: author picture
-  bio:          This is my bio!                               # OPTIONAL: text below author name in posts
+  bio:          All about technology                               # OPTIONAL: text below author name in posts
   location:     China                                       # OPTIONAL: used to display location of the author
   website:                          						  # OPTIONAL: link to the author of a post
   email:        csdwz0220@gmail.com                                              # OPTIONAL: used in the about page
