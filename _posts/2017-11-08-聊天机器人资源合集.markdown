@@ -2,8 +2,8 @@
 layout: post
 title:  "聊天机器人资源合集"
 date:   2017-11-08 13:50:00
-categories: Machine Learning
-tags: Machine Learning
+categories: "Machine Learning"
+tags: "Machine Learning"
 ---
 Awesome Chatbot   
 Github:https://github.com/fendouai/Awesome-Chatbot
