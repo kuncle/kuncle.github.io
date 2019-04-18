@@ -2,8 +2,8 @@
 layout: post
 title:  "机器学习算法选型"
 date:   2017-10-12 10:30:00
-categories: Machine Learning
-tags: Machine Learning
+categories: "Machine Learning"
+tags: "Machine Learning"
 ---
 监督学习的用途：
 k-近邻算法、线性回归、朴素贝叶斯、局部加权线性回归、支持向量机、Ridge回归、决策树、Lasso最小回归系数估计
