@@ -6,6 +6,7 @@ kuncle:
         - "Mysql, Redis"
         - "Git, SVN, Maven, Gradle, Linux Shell"
         - "K-means, FP-Growth, ALS, RF"
+        - "Team management, Requirements Analysis, Application Architecture"
 
     education:
         - time:             "2012 - 2016"
