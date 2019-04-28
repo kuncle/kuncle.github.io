@@ -65,9 +65,14 @@ tags: "New Concept English"
   &nbsp;&nbsp;&nbsp;&nbsp;How is your work?
 * how之后也可跟形容词，用于询问具体的多高，多长等
 > eg:  
-  &nbsp;&nbsp;&nbsp;&nbsp;How long is your hair?
+  &nbsp;&nbsp;&nbsp;&nbsp;How long is your hair?  
   &nbsp;&nbsp;&nbsp;&nbsp;How is Helen's car?
 
 #### whose引导的特殊疑问句
 * whose引导的特殊疑问句用于问某物时谁的。
 * whose特殊疑问句的结构：Whose+名词+助动词+主语？
+> eg:  
+  &nbsp;&nbsp;&nbsp;&nbsp;Whose shirt is that? / Whose is that shirt.
+* 回答时往往用名词所有格或形容词性物主代词
+> eg:  
+  &nbsp;&nbsp;&nbsp;&nbsp;It's Tim's shit.
