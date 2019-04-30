@@ -6,7 +6,7 @@ categories: Hadoop
 tags: Hadoop
 ---
 #### MapReduce的Shuffle过程
-![shuffle](../assets/img/shuffle.png)
+![shuffle](/assets/img/shuffle.png)
 
 这张是官方对Shuffle过程的描述.Shuffle描述着数据从map task输出到reduce task输入的这段过程.
 在Hadoop集群环境中,大部分map task与reduce task的执行是在不同的节点上.很多情况下Reduce执行时需要跨节点去拉取其它节点上的map task结果.如果集群正在运行的job有很多,那么task的正常执行对集群内部的网络资源消耗会很严重.这种网络消耗是正常的,我们不能限制,能做的就是最大化地减少不必要的消耗.还有在节点内,相比于内存,磁盘IO对job完成时间的影响也是可观的.从最基本的要求来说,我们对Shuffle过程的期望可以有： 
@@ -16,10 +16,10 @@ tags: Hadoop
 
 ###### 以WordCount为例,并假设它有8个map task和3个reduce task
 #### map端
-![map_shuffle](../assets/img/map_shuffle.jpg)
+![map_shuffle](/assets/img/map_shuffle.jpg)
     
     每个map task都有一个环形缓冲区.
-![map_shuffle](../assets/img/buffer.jpg) 
+![map_shuffle](/assets/img/buffer.jpg) 
 环形缓冲其实就是一个字节数组.存储着map的输出结果,当缓冲区快满的时候(80%)需要将缓冲区的数据以一个临时文件的方式存放到磁盘,当整个map task结束后再对磁盘中这个map task产生的所有临时文件做合并,生成最终的正式输出文件,然后等待reduce task来拉数据.
 ``` java
  // MapTask.java
@@ -27,7 +27,7 @@ private byte[] kvbuffer;  // main output buffer
 kvbuffer = new byte[maxMemUsage - recordCapacity];
 ```  
 kvbuffer包含数据区和索引区,这两个区是相邻不重叠的区域,用一个分界点来标识.分界点不是永恒不变的,每次Spill之后都会更新一次.初始分界点为0,数据存储方向为向上增长,索引存储方向向下:
-![buffer_index](../assets/img/buffer_index.jpg) 
+![buffer_index](/assets/img/buffer_index.jpg) 
 bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后变为4,写入一个int类型的value之后变成8.kvmeta的存放指针kvindex每次都是向下跳四个"格子".索引是对key-value在kvbuffer中的索引,是个四元组,占用四个Int长度,包括：value的起始位置,key的起始位置,partition值,value的长度.
 
 #### Shuffle整个流程分了四步
@@ -45,19 +45,19 @@ bufferindex一直往上增长,例如最初为0,写入一个int类型的key之后
 4. 每次溢写会在磁盘上生成一个溢写文件(数据被写入到mapreduce.cluster.local.dir配置的目录中的其中一个,使用round robin fashion的方式轮流.注意写入的是本地文件目录,而不是HDFS.Spill文件名像sipll0.out，spill1.out等),如果map的输出结果真的很大,有多次这样的溢写发生,磁盘上相应的就会有多个溢写文件存在.当map task真正完成时,内存缓冲区中的数据也全部溢写到磁盘中形成一个溢写文件(mapreduce.task.io.sort.factor属性配置每次最多合并多少个文件,默认为10,即一次最多合并10个spill文件.spill文件数量大于mapreduce.map.combiner.minspills配置的数,则在合并文件写入之前,会再次运行combiner.如果spill文件数量太少,运行combiner的收益可能小于调用的代价).
     
     合并过程的简单示意：
-![spill_merge](../assets/img/spill_merge.jpg) 
+![spill_merge](/assets/img/spill_merge.jpg) 
     
     最终磁盘中会至少有一个这样的溢写文件存在(如果map的输出结果很少,当map执行完成时,只会产生一个溢写文件),因为最终的文件只有一个,所以需要将这些溢写文件归并到一起,这个过程就叫做Merge.Merge是怎样的?如前面的例子,“aaa”从某个map task读取过来时值是5，从另外一个map 读取时值是8,因为它们有相同的key,所以得merge成group.什么是group.对于“aaa”就是像这样的：{“aaa”, [5, 8, 2, …]},数组中的值就是从不同溢写文件中读取出来的.请注意,因为merge是将多个溢写文件合并到一个文件,所以可能也有相同的key存在,在这个过程中如果client设置过Combiner,也会使用Combiner来合并相同的key. 
     
     每个mapper也有对应的一个索引环形Buffer,默认为1KB,可以通过mapreduce.task.index.cache.limit.bytes来配置,索引如果足够小则存在内存中,如果内存放不下,需要写入磁盘(索引文件超过21845.3时).Spill文件索引名称类似这样spill110.out.index,spill111.out.index.Spill文件的索引事实上是 org.apache.hadoop.mapred.SpillRecord的一个数组,每个Map任务（源码中的MapTask.java类）维护一个这样的列表.
     
     索引及spill文件如下图示意：
-![spill](../assets/img/spill.jpg) 
+![spill](/assets/img/spill.jpg) 
 
 ###### 至此,map端的所有工作都已结束,最终生成的这个文件也存放在TaskTracker够得着的某个本地目录内。每个reduce task不断地通过RPC从JobTracker那里获取map task是否完成的信息，如果reduce task得到通知，获知某台TaskTracker上的map task执行完成，Shuffle的后半段过程开始启动。
 
 #### reduce端
-![reduce_shuffle](../assets/img/reduce_shuffle.jpg)
+![reduce_shuffle](/assets/img/reduce_shuffle.jpg)
 reduce task在执行之前的工作就是不断地拉取当前job里每个map task的最终结果,然后对从不同地方拉取过来的数据不断地做merge,也最终形成一个文件作为reduce task的输入文件.
 1. Copy过程,简单地拉取数据.Reduce进程启动一些数据copy线程(Fetcher),通过HTTP方式请求map task所在的TaskTracker获取map task的输出文件.因为map task早已结束,这些文件就归TaskTracker管理在本地磁盘中. 
 2. Merge阶段.这里的merge如map端的merge动作,只是数组中存放的是不同map端copy来的数值.Copy过来的数据会先放入内存缓冲区中,这里的缓冲区大小要比map端的更为灵活,它基于JVM的heap size设置,因为Shuffle阶段Reducer不运行,所以应该把绝大部分的内存都给Shuffle用.这里需要强调的是,merge有三种形式:1)内存到内存;2)内存到磁盘;3)磁盘到磁盘.默认情况下第一种形式不启用,让人比较困惑,是吧.当内存中的数据量到达一定阈值,就启动内存到磁盘的merge.与map 端类似,这也是溢写的过程,这个过程中如果你设置有Combiner,也是会启用的,然后在磁盘中生成了众多的溢写文件.第二种merge方式一直在运行,直到没有map端的数据时才结束,然后启动第三种磁盘到磁盘的merge方式生成最终的那个文件. 

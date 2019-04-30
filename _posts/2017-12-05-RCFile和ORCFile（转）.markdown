@@ -33,7 +33,7 @@ select c from table where a > 1
 
 ## ORCFile
 ORC是在一定程度上扩展了RCFile，是对RCFile的优化。
-![shuffle](../assets/img/3.png)
+![shuffle](/assets/img/3.png)
 
 #### 存储结构
 根据结构图，我们可以看到ORCFile在RCFile基础上引申出来Stripe和Footer等。每个ORC文件首先会被横向切分成多个Stripe，而每个Stripe内部以列存储，所有的列存储在一个文件中，而且每个stripe默认的大小是250MB，相对于RCFile默认的行组大小是4MB，所以比RCFile更高效
@@ -45,7 +45,7 @@ ORC是在一定程度上扩展了RCFile，是对RCFile的优化。
 
 Hive读取数据的时候，根据FileFooter读出Stripe的信息，根据IndexData读出数据的偏移量从而读取出数据。
 网友有一幅图，形象的说明了这个问题：
-![shuffle](../assets/img/4.png)
+![shuffle](/assets/img/4.png)
 
 #### 存储空间
 ORCFile扩展了RCFile的压缩，除了Run-length（游程编码），引入了字典编码和Bit编码。

@@ -18,7 +18,7 @@ tags: "New Concept English"
   &nbsp;&nbsp;&nbsp;&nbsp;It's **his** shirt. (作形容词，后面需接名词)  
 
 #### 人称代词
-![personal pronouns](../assets/img/personal pronouns.jpg)
+![personal pronouns](/assets/img/personal pronouns.jpg)
 
 #### 名词变复数
 * 可数名词有单数和复数两种形式，指一个以上事物的时候用复数
