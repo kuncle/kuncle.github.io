@@ -77,3 +77,13 @@ tags: "New Concept English"
       3. [t]/[d]后读[id]
       > eg:  
         &nbsp;&nbsp;&nbsp;&nbsp;wanted/minded
+    4. 否定：动词前加didn't，把 **动词改回原形**
+    > eg:  
+      &nbsp;&nbsp;&nbsp;&nbsp;I didn't work yesterday.  
+      &nbsp;&nbsp;&nbsp;&nbsp;He didn't come.  
+      &nbsp;&nbsp;&nbsp;&nbsp;We didn't finish the work.
+    5. 疑问：主语前加did， **动词改回原形**，句末问号
+    > eg:  
+      &nbsp;&nbsp;&nbsp;&nbsp;Did he phone you yesterday?  
+      &nbsp;&nbsp;&nbsp;&nbsp;What did you day?  
+      &nbsp;&nbsp;&nbsp;&nbsp;What did you do yesterday?
