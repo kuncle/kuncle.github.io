@@ -37,4 +37,7 @@ tags: "Java"
   &nbsp;&nbsp;&nbsp;&nbsp;Once finalize method completes immediately Garbage Collector destroy that object. finalize method is present in Object class and its syntax is:   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**protected void finalize throws Throwable{}**    
   &nbsp;&nbsp;&nbsp;&nbsp;Since Object class contains finalize method hence finalize method is available for every java class since Object is superclass of all java classes. Since it is available for every java class hence Garbage Collector can call finalize method on **any java object**
-  Now, the finalize method which is present in Object class, has empty implementation, in our class clean-up activities are there, then we have to override this method to define our own clean-up activities.
+  Now, the finalize method which is present in Object class, has empty implementation, in our class clean-up activities are there, then we have to override this method to define our own clean-up activities.   
+  &nbsp;&nbsp;&nbsp;&nbsp;There is no guarantee about the time when finalize is called. It may be called any time after the object is not being referred anywhere (cab be garbage collected).   
+  &nbsp;&nbsp;&nbsp;&nbsp;JVM does not ignore all exceptions while executing finalize method, but it ignores only Unchecked exceptions. If the corresponding catch block is there then JVM won’t ignore and corresponding catch block will be executed.   
+  &nbsp;&nbsp;&nbsp;&nbsp;System.gc() is just a request to JVM to execute the Garbage Collector. It’s up-to JVM to call Garbage Collector or not.Usually JVM calls Garbage Collector when there is not enough space available in the Heap area or when the memory is low.
