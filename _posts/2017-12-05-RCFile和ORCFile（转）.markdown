@@ -15,7 +15,7 @@ RCFile文件格式是FaceBook开源的一种Hive的文件存储格式，首先�
 在一般的行存储中 select a from table，虽然只是取出一个字段的值，但是还是会遍历整个表，所以效果和select * from table 一样，在RCFile中，像前面说的情况，只会读取该行组的一行。
 在一般的列存储中，会将不同的列分开存储，这样在查询的时候会跳过某些列，但是有时候存在一个表的有些列不在同一个HDFS块上（如下图），所以在查询的时候，Hive重组列的过程会浪费很多IO开销
 
-![shuffle](../assets/img/2.png)
+![shuffle](/assets/img/2.png)
 
 #### 列存储
 而RCFile由于相同的列都是在一个HDFS块上，所以相对列存储而言会节省很多资源
