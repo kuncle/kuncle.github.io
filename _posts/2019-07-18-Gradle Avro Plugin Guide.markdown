@@ -12,14 +12,14 @@ apply plugin: "com.commercehub.gradle.plugin.avro-base"
 buildscript {  
     repositories {  
         maven {  
-            url "https://www.artifactrepository.citigroup.net/artifactory/list/maven-teamdev/"  
+            url "xxx"  
             credentials{  
-                username=ear_ro_user  
-                password=ear_ro_password  
+                username=xxx  
+                password=xxx  
             }  
         }  
         maven {  
-            url "https://www.artifactrepository.citigroup.net/artifactory/gradle-plugins-remote"  
+            url "xxx"  
         }  
     }  
     dependencies {  
