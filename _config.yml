@@ -6,7 +6,7 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
-title:            Nick
+title:            Kuncle
 head_title:       King's Uncle
 subtitle:         God I pray to prosper thee.
 description:      God I pray to prosper thee.
@@ -17,7 +17,7 @@ baseurl:          "/" # the subpath of your site, e.g. /blog
 url:              "" # the base hostname & protocol for your site. Have a look at robots.txt as well!
 permalink:        /blog/:categories/:title
 cover:            /assets/mountain-cover.jpg
-disqus_shortname: "nick liu"
+disqus_shortname: "Kuncle"
 
 # Build settings
 sass:
