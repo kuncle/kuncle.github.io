@@ -1,0 +1,96 @@
+$ kubectl patch statefulset mysql --type='json' -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"mysql:5.7.23"}]'
+statefulset.apps/mysql patched
+
+
+
+
+
+
+
+$ kubectl patch statefulset mysql -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"partition":2}}}}'
+statefulset.apps/mysql patched
+
+
+
+
+
+
+$ kubectl get ds -n kube-system fluentd-elasticsearch
+NAME                    DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+fluentd-elasticsearch   2         2         2         2            2           <none>          1h
+
+
+
+
+
+
+$ kubectl set image ds/fluentd-elasticsearch fluentd-elasticsearch=k8s.gcr.io/fluentd-elasticsearch:v2.2.0 --record -n=kube-system
+
+
+
+
+
+
+$ kubectl rollout status ds/fluentd-elasticsearch -n kube-system
+Waiting for daemon set "fluentd-elasticsearch" rollout to finish: 0 out of 2 new pods have been updated...
+Waiting for daemon set "fluentd-elasticsearch" rollout to finish: 0 out of 2 new pods have been updated...
+Waiting for daemon set "fluentd-elasticsearch" rollout to finish: 1 of 2 updated pods are available...
+daemon set "fluentd-elasticsearch" successfully rolled out
+
+
+
+
+
+$ kubectl rollout history daemonset fluentd-elasticsearch -n kube-system
+daemonsets "fluentd-elasticsearch"
+REVISION  CHANGE-CAUSE
+1         <none>
+2         kubectl set image ds/fluentd-elasticsearch fluentd-elasticsearch=k8s.gcr.io/fluentd-elasticsearch:v2.2.0 --namespace=kube-system --record=true
+
+
+
+
+
+
+$ kubectl describe controllerrevision fluentd-elasticsearch-64dc6799c9 -n kube-system
+Name:         fluentd-elasticsearch-64dc6799c9
+Namespace:    kube-system
+Labels:       controller-revision-hash=2087235575
+              name=fluentd-elasticsearch
+Annotations:  deprecated.daemonset.template.generation=2
+              kubernetes.io/change-cause=kubectl set image ds/fluentd-elasticsearch fluentd-elasticsearch=k8s.gcr.io/fluentd-elasticsearch:v2.2.0 --record=true --namespace=kube-system
+API Version:  apps/v1
+Data:
+  Spec:
+    Template:
+      $ Patch:  replace
+      Metadata:
+        Creation Timestamp:  <nil>
+        Labels:
+          Name:  fluentd-elasticsearch
+      Spec:
+        Containers:
+          Image:              k8s.gcr.io/fluentd-elasticsearch:v2.2.0
+          Image Pull Policy:  IfNotPresent
+          Name:               fluentd-elasticsearch
+...
+Revision:                  2
+Events:                    <none>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+for dstIP := range 所有被 networkpolicy.spec.podSelector 选中的 Pod 的 IP 地址
+  for srcIP := range 所有被 ingress.from.podSelector 选中的 Pod 的 IP 地址
+    for port, protocol := range ingress.ports {
+      iptables -A KUBE-NWPLCY-CHAIN -s $srcIP -d $dstIP -p $protocol -m $protocol --dport $port -j ACCEPT 
+    }
+  }
+} 
+
+
+
+
+
+
+
+
+
+for pod := range 该 Node 上的所有 Pod {
+    if pod 是 networkpolicy.spec.podSelector 选中的 {
+        iptables -A FORWARD -d $podIP -m physdev --physdev-is-bridged -j KUBE-POD-SPECIFIC-FW-CHAIN
+        iptables -A FORWARD -d $podIP -j KUBE-POD-SPECIFIC-FW-CHAIN
+        ...
+    }
+}

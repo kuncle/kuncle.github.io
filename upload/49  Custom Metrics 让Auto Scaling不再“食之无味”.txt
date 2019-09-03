@@ -1,0 +1,61 @@
+https://<apiserver_ip>/apis/custom-metrics.metrics.k8s.io/v1beta1/namespaces/default/pods/sample-metrics-app/http_requests 
+
+
+
+
+$ kubectl create clusterrolebinding allowall-cm --clusterrole custom-metrics-server-resources --user system:anonymous
+clusterrolebinding "allowall-cm" created
+
+
+
+
+
+
+https://<apiserver_ip>/apis/custom-metrics.metrics.k8s.io/v1beta1/namespaces/default/services/sample-metrics-app/http_requests
+
+
+
+
+
+
+$ # Install hey
+$ docker run -it -v /usr/local/bin:/go/bin golang:1.8 go get github.com/rakyll/hey
+
+$ export APP_ENDPOINT=$(kubectl get svc sample-metrics-app -o template --template {{.spec.clusterIP}}); echo ${APP_ENDPOINT}
+$ hey -n 50000 -c 1000 http://${APP_ENDPOINT}
+
+
+
+
+
+$ curl -sSLk https://<apiserver_ip>/apis/custom-metrics.metrics.k8s.io/v1beta1/namespaces/default/services/sample-metrics-app/http_requests
+{
+  "kind": "MetricValueList",
+  "apiVersion": "custom-metrics.metrics.k8s.io/v1beta1",
+  "metadata": {
+    "selfLink": "/apis/custom-metrics.metrics.k8s.io/v1beta1/namespaces/default/services/sample-metrics-app/http_requests"
+  },
+  "items": [
+    {
+      "describedObject": {
+        "kind": "Service",
+        "name": "sample-metrics-app",
+        "apiVersion": "/__internal"
+      },
+      "metricName": "http_requests",
+      "timestamp": "2018-11-30T20:56:34Z",
+      "value": "501484m"
+    }
+  ]
+}
+
+
+
+
+
+
+
+  if (request.url == "/metrics") {
+    response.end("# HELP http_requests_total The amount of requests served by the server in total\n# TYPE http_requests_total counter\nhttp_requests_total " + totalrequests + "\n");
+    return;
+  }

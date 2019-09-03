@@ -1,0 +1,21 @@
+$ kubectl describe jobs/pi
+Name:             pi
+Namespace:        default
+Selector:         controller-uid=c2db599a-2c9d-11e6-b324-0209dc45a495
+Labels:           controller-uid=c2db599a-2c9d-11e6-b324-0209dc45a495
+                  job-name=pi
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+..
+Pods Statuses:    0 Running / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:       controller-uid=c2db599a-2c9d-11e6-b324-0209dc45a495
+                job-name=pi
+  Containers:
+   ...
+  Volumes:              <none>
+Events:
+  FirstSeen    LastSeen    Count    From            SubobjectPath    Type        Reason            Message
+  ---------    --------    -----    ----            -------------    --------    ------            -------
+  1m           1m          1        {job-controller }                Normal      SuccessfulCreate  Created pod: pi-rq5rl

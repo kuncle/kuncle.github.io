@@ -1,0 +1,34 @@
+$ kubectl create -f local-pv.yaml 
+persistentvolume/example-pv created
+
+$ kubectl get pv
+NAME         CAPACITY   ACCESS MODES   RECLAIM POLICY  STATUS      CLAIM             STORAGECLASS    REASON    AGE
+example-pv   5Gi        RWO            Delete           Available                     local-storage             16s
+
+
+
+
+
+
+
+
+$ kubectl get pv
+NAME                CAPACITY    ACCESSMODES   RECLAIMPOLICY   STATUS      CLAIM     STORAGECLASS    REASON    AGE
+local-pv-ce05be60   1024220Ki   RWO           Delete          Available             local-storage             26s
+
+$ kubectl describe pv local-pv-ce05be60 
+Name:  local-pv-ce05be60
+...
+StorageClass: local-storage
+Status:  Available
+Claim:  
+Reclaim Policy: Delete
+Access Modes: RWO
+Capacity: 1024220Ki
+NodeAffinity:
+  Required Terms:
+      Term 0:  kubernetes.io/hostname in [node-1]
+Message: 
+Source:
+    Type: LocalVolume (a persistent volume backed by local storage on a node)
+    Path: /mnt/disks/vol1

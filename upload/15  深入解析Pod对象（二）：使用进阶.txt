@@ -1,0 +1,10 @@
+FirstSeen LastSeen    Count   From            SubobjectPath           Type        Reason      Message
+--------- --------    -----   ----            -------------           --------    ------      -------
+2s        2s      1   {kubelet worker0}   spec.containers{liveness}   Warning     Unhealthy   Liveness probe failed: cat: can't open '/tmp/healthy': No such file or directory
+
+
+
+
+
+
+

@@ -1,0 +1,174 @@
+func (d *Driver) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
+ resp := &csi.GetPluginInfoResponse{
+  Name:          driverName,
+  VendorVersion: version,
+ }
+ ...
+}
+
+
+
+
+
+
+
+func (d *Driver) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
+ ...
+ 
+ volumeReq := &godo.VolumeCreateRequest{
+  Region:        d.region,
+  Name:          volumeName,
+  Description:   createdByDO,
+  SizeGigaBytes: size / GB,
+ }
+ 
+ ...
+ 
+ vol, _, err := d.doClient.Storage.CreateVolume(ctx, volumeReq)
+ 
+ ...
+ 
+ resp := &csi.CreateVolumeResponse{
+  Volume: &csi.Volume{
+   Id:            vol.ID,
+   CapacityBytes: size,
+   AccessibleTopology: []*csi.Topology{
+    {
+     Segments: map[string]string{
+      "region": d.region,
+     },
+    },
+   },
+  },
+ }
+ 
+ return resp, nil
+}
+
+
+
+
+
+
+
+func (d *Driver) ControllerPublishVolume(ctx context.Context, req *csi.ControllerPublishVolumeRequest) (*csi.ControllerPublishVolumeResponse, error) {
+ ...
+ 
+  dropletID, err := strconv.Atoi(req.NodeId)
+  
+  // check if volume exist before trying to attach it
+  _, resp, err := d.doClient.Storage.GetVolume(ctx, req.VolumeId)
+ 
+ ...
+ 
+  // check if droplet exist before trying to attach the volume to the droplet
+  _, resp, err = d.doClient.Droplets.Get(ctx, dropletID)
+ 
+ ...
+ 
+  action, resp, err := d.doClient.StorageActions.Attach(ctx, req.VolumeId, dropletID)
+
+ ...
+ 
+ if action != nil {
+  ll.Info("waiting until volume is attached")
+ if err := d.waitAction(ctx, req.VolumeId, action.ID); err != nil {
+  return nil, err
+  }
+  }
+  
+  ll.Info("volume is attached")
+ return &csi.ControllerPublishVolumeResponse{}, nil
+}
+
+
+
+
+
+
+
+func (d *Driver) NodeStageVolume(ctx context.Context, req *csi.NodeStageVolumeRequest) (*csi.NodeStageVolumeResponse, error) {
+ ...
+ 
+ vol, resp, err := d.doClient.Storage.GetVolume(ctx, req.VolumeId)
+ 
+ ...
+ 
+ source := getDiskSource(vol.Name)
+ target := req.StagingTargetPath
+ 
+ ...
+ 
+ if !formatted {
+  ll.Info("formatting the volume for staging")
+  if err := d.mounter.Format(source, fsType); err != nil {
+   return nil, status.Error(codes.Internal, err.Error())
+  }
+ } else {
+  ll.Info("source device is already formatted")
+ }
+ 
+...
+
+ if !mounted {
+  if err := d.mounter.Mount(source, target, fsType, options...); err != nil {
+   return nil, status.Error(codes.Internal, err.Error())
+  }
+ } else {
+  ll.Info("source device is already mounted to the target path")
+ }
+ 
+ ...
+ return &csi.NodeStageVolumeResponse{}, nil
+}
+
+
+
+
+
+
+func (d *Driver) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
+ ...
+ source := req.StagingTargetPath
+ target := req.TargetPath
+ 
+ mnt := req.VolumeCapability.GetMount()
+ options := mnt.MountFlag
+    ...
+    
+ if !mounted {
+  ll.Info("mounting the volume")
+  if err := d.mounter.Mount(source, target, fsType, options...); err != nil {
+   return nil, status.Error(codes.Internal, err.Error())
+  }
+ } else {
+  ll.Info("volume is already mounted")
+ }
+ 
+ return &csi.NodePublishVolumeResponse{}, nil
+}
+
+
+
+
+
+
+
+
+$ kubectl apply -f https://raw.githubusercontent.com/digitalocean/csi-digitalocean/master/deploy/kubernetes/releases/csi-digitalocean-v0.2.0.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

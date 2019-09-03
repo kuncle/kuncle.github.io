@@ -1,0 +1,95 @@
+$ etcd --name infra0 --initial-advertise-peer-urls http://10.0.1.10:2380 \
+  --listen-peer-urls http://10.0.1.10:2380 \
+...
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380 \
+  --initial-cluster-state new
+  
+$ etcd --name infra1 --initial-advertise-peer-urls http://10.0.1.11:2380 \
+  --listen-peer-urls http://10.0.1.11:2380 \
+...
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380 \
+  --initial-cluster-state new
+  
+$ etcd --name infra2 --initial-advertise-peer-urls http://10.0.1.12:2380 \
+  --listen-peer-urls http://10.0.1.12:2380 \
+...
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380 \
+  --initial-cluster-state new
+
+
+
+
+...
+--initial-cluster infra0=http://10.0.1.10:2380,infra1=http://10.0.1.11:2380,infra2=http://10.0.1.12:2380 \
+
+
+
+
+
+func (c *Controller) Start() error {
+ for {
+  err := c.initResource()
+  ...
+  time.Sleep(initRetryWaitTime)
+ }
+ c.run()
+}
+
+func (c *Controller) run() {
+ ...
+ 
+ _, informer := cache.NewIndexerInformer(source, &api.EtcdCluster{}, 0, cache.ResourceEventHandlerFuncs{
+  AddFunc:    c.onAddEtcdClus,
+  UpdateFunc: c.onUpdateEtcdClus,
+  DeleteFunc: c.onDeleteEtcdClus,
+ }, cache.Indexers{})
+ 
+ ctx := context.TODO()
+ // TODO: use workqueue to avoid blocking
+ informer.Run(ctx.Done())
+}
+
+
+
+
+
+
+/usr/local/bin/etcd
+  --data-dir=/var/etcd/data
+  --name=example-etcd-cluster-mbzlg6sd56
+  --initial-advertise-peer-urls=http://example-etcd-cluster-mbzlg6sd56.example-etcd-cluster.default.svc:2380
+  --listen-peer-urls=http://0.0.0.0:2380
+  --listen-client-urls=http://0.0.0.0:2379
+  --advertise-client-urls=http://example-etcd-cluster-mbzlg6sd56.example-etcd-cluster.default.svc:2379
+  --initial-cluster=example-etcd-cluster-mbzlg6sd56=http://example-etcd-cluster-mbzlg6sd56.example-etcd-cluster.default.svc:2380
+  --initial-cluster-state=new
+  --initial-cluster-token=4b5215fa-5401-4a95-a8c6-892317c9bef8
+
+
+
+
+
+
+/usr/local/bin/etcd
+  --data-dir=/var/etcd/data
+  --name=example-etcd-cluster-v6v6s6stxd
+  --initial-advertise-peer-urls=http://example-etcd-cluster-v6v6s6stxd.example-etcd-cluster.default.svc:2380
+  --listen-peer-urls=http://0.0.0.0:2380
+  --listen-client-urls=http://0.0.0.0:2379
+  --advertise-client-urls=http://example-etcd-cluster-v6v6s6stxd.example-etcd-cluster.default.svc:2379
+  --initial-cluster=example-etcd-cluster-mbzlg6sd56=http://example-etcd-cluster-mbzlg6sd56.example-etcd-cluster.default.svc:2380,example-etcd-cluster-v6v6s6stxd=http://example-etcd-cluster-v6v6s6stxd.example-etcd-cluster.default.svc:2380
+  --initial-cluster-state=existing
+
+
+
+
+
+
+
+
+
+
+

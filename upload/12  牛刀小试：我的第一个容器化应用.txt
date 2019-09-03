@@ -1,0 +1,25 @@
+$ kubectl describe pod nginx-deployment-67594d6bf6-9gdvr
+Name:               nginx-deployment-67594d6bf6-9gdvr
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               node-1/10.168.0.3
+Start Time:         Thu, 16 Aug 2018 08:48:42 +0000
+Labels:             app=nginx
+                    pod-template-hash=2315082692
+Annotations:        <none>
+Status:             Running
+IP:                 10.32.0.23
+Controlled By:      ReplicaSet/nginx-deployment-67594d6bf6
+...
+Events:
+
+  Type     Reason                  Age                From               Message
+
+  ----     ------                  ----               ----               -------
+  
+  Normal   Scheduled               1m                 default-scheduler  Successfully assigned default/nginx-deployment-67594d6bf6-9gdvr to node-1
+  Normal   Pulling                 25s                kubelet, node-1    pulling image "nginx:1.7.9"
+  Normal   Pulled                  17s                kubelet, node-1    Successfully pulled image "nginx:1.7.9"
+  Normal   Created                 17s                kubelet, node-1    Created container
+  Normal   Started                 17s                kubelet, node-1    Started container

@@ -1,0 +1,7 @@
+$ cd kubernetes/pkg/controller/
+$ ls -d */              
+deployment/             job/                    podautoscaler/          
+cloud/                  disruption/             namespace/              
+replicaset/             serviceaccount/         volume/
+cronjob/                garbagecollector/       nodelifecycle/          replication/            statefulset/            daemon/
+...
