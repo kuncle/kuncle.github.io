@@ -14,6 +14,7 @@ tags: Flink
 > Temporal Table的标准语法，用来声明关联的是维表哪个时刻的快照。维表 JOIN 语法/示例如下。
 
 > 假设我们有一个Orders订单数据流，希望根据产品ID补全流上的产品维度信息，所以需要跟Products维度表进行关联。Orders和Products的DDL声明语句如下：
+
 ``` sql
 CREATE TABLE Orders (
   orderId VARCHAR,          -- 订单 id
