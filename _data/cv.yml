@@ -1,40 +1,56 @@
 kuncle:
     profile: "I am a senior BigData developer with more than five years of experience in Java and Data development. I am used to agile software development methods and to work independently. I like to teach junior developers and leading teams by example. Because of my broad knowledge in various technologies I am often the one who develops proof of concept applications for our customers. In my spare time, I am exploring new technologies, work on GitHub projects and take pictures."
     skills:
-        - "Java, Scala, SQL"
-        - "Hadoop, Spark, Kafka, HBase, Hive, Flume, Zookeeper, Spring"
-        - "Mysql, Redis"
-        - "Git, SVN, Maven, Gradle, Linux Shell"
-        - "K-means, FP-Growth, ALS, RF"
-        - "Team management, Requirements Analysis, Application Architecture"
-
+        - "5+ years of experience in development and architecture with key emphasis on the trending Big Data Technologies - Spark, Flink, Hadoop, Kafka, HBase, Hive"
+        - "Good Knowledge of Big Data and Real-time/Offline Architecture"
+        - "Architect, design & develop Big Data Solutions practice including set up Big Data roadmap, build supporting infrastructure and team to provide Big Data"
+        - "Architecting and implementing Portfolio Recommendation Analytics Engine using Hive, Oozie, Spark SQL, Spark MLlib and HBase"
+        - "Excellent understanding of Hadoop/Spark architecture and underlying framework including storage management"
+        - "Familiar with JAVA, JVM, Scala, Zookeeper, Git, SVN, Maven, Gradle, uDeploy"
+        - "Strong ability to tackle high performance, scalability, reliability issues"
+        - "Comfortable with learning cutting edge technologies and applications to greenfield projects"
     education:
         - time:             "2013 - 2016"
           location:         "Zhejiang University"
           description:      "Computer Science and Technology"
     employment:
+        - time:             "06.2018 - 11.2019"
+          location:         "Shanghai"
+          company:          "Citi Group - CSTC"
+          position:         "Senior Big Data Developer (Manager) "
+          responsibilities:
+            - "Provided architect responsibilities including roadmaps, leadership, planning, technical innovation, security, and IT governance, etc"
+            - "Developed technical presentations, proposals and performed presentations"
+            - "Evaluated new technologies; Executed proof-of-concepts and developed specialized solutions"
+            - "Designed and developed a real-time computation platform using Flink, Kafka and HBase"
+            - "Presented and persuaded the design architecture to various stakeholders"
         - time:             "03.2017 - 05.2018"
           location:         "Chengdu"
           company:          "Manulife"
-          position:         "Team Leader"
+          position:         "Senior Big Data Developer (Team Lead) "
           responsibilities:
-            - "Led the data team."
-            - "Responsible for data products and data architecture"
+            - "Focused on the whole architect and development of this Recommend System project as the founder, application architect and technical leader in the Big Data team"
+            - "Built the platform with Cloudera Manager, including Zookeeper, Hadoop, Yarn, Spark, Hive, HBase and Kafka etc."
+            - "Used Hive to build offline Data Warehouse, and Kafka and HBase as the real-time system"
+            - "Used Spark MLLib to implemented recommendation system and user-loss prediction model"
+            - "Provided technical leaderships and governance of the big data team and the implementation of the solution architecture in Big Data"
+            - "Used Jenkins pipeline for Continuous Deployment and Jira for Continuous feedbacks"
         - time:             "07.2016 - 03.2017"
           location:         "Chengdu"
           company:          "Yaowang Technology"
-          position:         "Senior BigData Develope"
+          position:         "Senior BigData Developer"
           responsibilities:
-            - "Developed Data Warehouse"
-            - "Data collection and storage"
-            - "Offline data analysis and real-time processing"
-            - "Responsible for building big data platform"
+            - "Built a user data analysis platform with a data analyst
+            - "Implemented architectures for all the ETL data loads coming in from the source system which were then loaded into the data warehouse“
+            - "Built, managed and continuously monitored the Hadoop cluster through Cloudera Manager”
+            - "Provided expertise on batch & stream with Hadoop, Kafka and Spark“ 
+            - "Caught up with emerging tools and technologies and recommend"
         - time:             "07.2014 - 06.2016"
           location:         "Shanghai"
-          company:          "SAIC - Saike Electronic Commerce Co., Ltd."
-          position:         "Java Developer / BigData Developer"
+          company:          "SAIC Motor Corp - Saike Electronic Commerce Co., Ltd."
+          position:         "Senior Java Developer / BigData Developer"
           responsibilities:
-            - "Developer of Mall Web applications"
-            - "Data collection and storage"
-            - "Offline data analysis and real-time processing"
-            - "Responsible for building big data platform"
+            - "Designed and developed an online mall system”
+            - "Designed and developed a high performance, robust and secure Big Data architecture based on Cloudera Manager ecosystems“
+            - "Performed data cleaning and data manipulation activities using Hadoop“
+            - "Designed and developed an online mall product recommendation system”
