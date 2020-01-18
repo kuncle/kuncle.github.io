@@ -41,16 +41,16 @@ kuncle:
           position:         "Senior BigData Developer"
           responsibilities:
             - "Built a user data analysis platform with a data analyst"
-            - "Implemented architectures for all the ETL data loads coming in from the source system which were then loaded into the data warehouse“
-            - "Built, managed and continuously monitored the Hadoop cluster through Cloudera Manager”
-            - "Provided expertise on batch & stream with Hadoop, Kafka and Spark“ 
+            - "Implemented architectures for all the ETL data loads coming in from the source system which were then loaded into the data warehouse"
+            - "Built, managed and continuously monitored the Hadoop cluster through Cloudera Manager"
+            - "Provided expertise on batch & stream with Hadoop, Kafka and Spark"
             - "Caught up with emerging tools and technologies and recommend"
         - time:             "07.2014 - 06.2016"
           location:         "Shanghai"
           company:          "SAIC Motor Corp - Saike Electronic Commerce Co., Ltd."
           position:         "Senior Java Developer / BigData Developer"
           responsibilities:
-            - "Designed and developed an online mall system”
-            - "Designed and developed a high performance, robust and secure Big Data architecture based on Cloudera Manager ecosystems“
-            - "Performed data cleaning and data manipulation activities using Hadoop“
-            - "Designed and developed an online mall product recommendation system”
+            - "Designed and developed an online mall system"
+            - "Designed and developed a high performance, robust and secure Big Data architecture based on Cloudera Manager ecosystems"
+            - "Performed data cleaning and data manipulation activities using Hadoop"
+            - "Designed and developed an online mall product recommendation system"
