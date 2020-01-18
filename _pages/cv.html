@@ -16,7 +16,7 @@ excerpt:   This page contains the curriculum vitae (CV) of the author.
 
 <div class="md-card shadow">
     <div class="title icon-stats-bars">
-        <h2>Skills</h2>
+        <h2>SUMMARYSummary</h2>
     </div>
     <div class="content">
         <ul>
@@ -89,5 +89,20 @@ excerpt:   This page contains the curriculum vitae (CV) of the author.
         </ul>
         <span class="icon-briefcase"></span>
     </div>
+</div>
+
+<div class="md-card shadow education">
+    <div class="title icon-library">
+        <h2>Education</h2>
+    </div>
+    {% for entry in cv.education %}   
+    <dl>
+        <dt class="time">{{entry.time}}</dt>
+        <dd>
+            <h3>{{entry.location}}</h3>
+            <p>{{entry.description}}</p>
+        </dd>
+    </dl>
+    {% endfor %}
 </div>
 {% endfor %}
